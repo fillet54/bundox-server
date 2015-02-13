@@ -9,17 +9,39 @@ import javax.ws.rs.core.MediaType;
  * Root resource (exposed at "javaresource" path)
  */
 @Path("javaresource")
+@Produces(MediaType.APPLICATION_JSON)
 public class JavaResource {
 
-    /**
-     * Method handling HTTP GET requests. The returned object will be sent
-     * to the client as "text/plain" media type.
-     *
-     * @return String that will be returned as a text/plain response.
-     */
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getIt() {
-        return "Got it!";
+    public Object getIt() {
+        return new Greeting("Phillip", "Java says hi");
+    }
+    
+    public class Greeting {
+        private String name;
+        private String msg;
+
+        public Greeting(String name, String msg) {
+            this.name = name;
+            this.msg = msg;
+        }
+        
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
     }
 }
+
+
