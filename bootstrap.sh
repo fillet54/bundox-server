@@ -67,3 +67,9 @@ $GLASSFISH_HOME/bin/asadmin --passwordfile password.txt --user admin enable-secu
 
 echo Restarting GlassFish
 sudo service GlassFish_domain1 restart
+
+#Install Aurelia requirements
+sudo apt-get install nodejs -y
+sudo apt-get install npm -y
+sudo npm install -g gulp
+sudo npm install -g jspm
