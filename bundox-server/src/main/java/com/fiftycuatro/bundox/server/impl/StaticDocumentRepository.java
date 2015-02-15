@@ -1,7 +1,10 @@
-package com.fiftycuatro.bundox.server.core;
+package com.fiftycuatro.bundox.server.impl;
 
+import com.fiftycuatro.bundox.server.core.Document;
+import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StaticDocumentRepository implements DocumentRepository {
 
@@ -26,5 +29,20 @@ public class StaticDocumentRepository implements DocumentRepository {
     @Override
     public List<Document> getAllDocuments() {
         return _documents;
+    }
+    
+    @Override
+    public List<Document> findDocumentsByName(String name) {
+        return _documents.stream()
+                .filter(d -> d.getName().equalsIgnoreCase(name))
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<Document> findDocumentsByNameAndVersion(String name, String version) {
+        return _documents.stream()
+                .filter(d -> d.getName().equalsIgnoreCase(name))
+                .filter(d -> d.getVersion().equalsIgnoreCase(version))
+                .collect(Collectors.toList());
     }
 }
