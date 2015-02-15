@@ -1,4 +1,4 @@
-package com.fiftyquatro.bundox.server.api.v1;
+package com.fiftycuatro.bundox.server.api.v1;
 
 public class DocumentDTO {
     private String name;

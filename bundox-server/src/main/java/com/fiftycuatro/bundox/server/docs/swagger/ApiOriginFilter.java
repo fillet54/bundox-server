@@ -1,4 +1,4 @@
-package com.fiftyquatro.bundox.server.docs.swagger.util;
+package com.fiftycuatro.bundox.server.docs.swagger;
 
 /**
  *  Copyright 2014 Reverb Technologies, Inc.

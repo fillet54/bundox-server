@@ -1,4 +1,4 @@
-package com.fiftyquatro.bundox.server.core;
+package com.fiftycuatro.bundox.server.core;
 
 public class Document {
     private String name;

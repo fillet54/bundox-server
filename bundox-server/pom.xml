@@ -4,13 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.fiftyquatro</groupId>
-    <artifactId>bundox-server</artifactId>
+    <artifactId>bundox</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>bundox-server</name>
 
     <build>
-        <finalName>bundox-server</finalName>
+        <finalName>bundox</finalName>
+     
         <plugins>
             <plugin>
                 <groupId>com.googlecode.maven-download-plugin</groupId>
@@ -30,6 +31,8 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <!--
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
@@ -41,11 +44,11 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>target/${project.artifactId}/api-docs</outputDirectory>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}/api-docs</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.build.directory}/swagger-ui-${swagger-ui-version}/dist</directory>
-                                    <filtering>true</filtering>
+                                    
                                     <excludes>
                                         <exclude>index.html</exclude>
                                     </excludes>
@@ -55,28 +58,9 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
             
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>default-war</id>
-                        <configuration>
-                            <webResources>
-                                <resource>
-                                    <directory>${project.build.directory}/${project.artifactId}</directory>
-                                    <targetPath>WEB-INF/webapp</targetPath>
-                                    <includes>
-                                        <include>**/*</include>
-                                    </includes>
-                                </resource>
-                            </webResources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -94,7 +78,35 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>  
+            </plugin> 
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <filters>
+                        <filter>${project.basedir}/src/main/resources/com/fiftycuatro/bundox/config/war_filters.properties</filter>
+                    </filters>
+                    <webResources>
+                        <resource>
+                            <directory>${project.build.directory}/swagger-ui-${swagger-ui-version}/dist</directory>
+                            <targetPath>api-docs</targetPath>
+                            <excludes>
+                                <exclude>index.html</exclude>
+                            </excludes>
+                        </resource>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>src/main/webapp</directory>
+                            <includes>
+                                <include>**/web.xml</include>
+                                <include>api-docs/config.js</include>
+                            </includes>
+                        </resource>                                
+                    </webResources>
+                </configuration>
+            </plugin> 
         </plugins>
     </build>
 
@@ -153,6 +165,10 @@
     
     </dependencies>
     <properties>
+        <bundox-host>localhost:8080</bundox-host>
+        <bundox-deployed-root>bundox</bundox-deployed-root>
+        <bundox-api-path>api</bundox-api-path>
+        
         <jersey.version>2.15</jersey.version>
         <swagger-ui-version>2.1.0-alpha.6</swagger-ui-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

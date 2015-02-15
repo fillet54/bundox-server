@@ -1,4 +1,4 @@
-package com.fiftyquatro.bundox.server;
+package com.fiftycuatro.bundox.server;
 
 import org.glassfish.jersey.server.ResourceConfig;
 

@@ -1,6 +1,6 @@
-package com.fiftyquatro.bundox.server.api.v1;
+package com.fiftycuatro.bundox.server.api.v1;
 
-import com.fiftyquatro.bundox.server.core.Document;
+import com.fiftycuatro.bundox.server.core.Document;
 
 public class Transformations {
     

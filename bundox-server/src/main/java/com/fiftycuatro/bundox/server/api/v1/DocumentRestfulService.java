@@ -1,6 +1,6 @@
-package com.fiftyquatro.bundox.server.api.v1;
+package com.fiftycuatro.bundox.server.api.v1;
 
-import com.fiftyquatro.bundox.server.core.DocumentRepository;
+import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import java.util.List;
