@@ -12,10 +12,11 @@ System.config({
     "aurelia-bootstrapper": "github:aurelia/bootstrapper@0.9.3",
     "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.4.2",
     "aurelia-framework": "github:aurelia/framework@0.8.6",
-    "aurelia-http-client": "github:aurelia/http-client@0.5.0",
+    "aurelia-http-client": "github:aurelia/http-client@0.5.2",
     "aurelia-router": "github:aurelia/router@0.5.5",
     "bootstrap": "github:twbs/bootstrap@3.3.2",
     "font-awesome": "npm:font-awesome@4.3.0",
+    "rx": "npm:rx@2.3.25",
     "github:aurelia/binding@0.3.4": {
       "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.4.2",
       "aurelia-metadata": "github:aurelia/metadata@0.3.1",
@@ -51,7 +52,7 @@ System.config({
       "aurelia-history": "github:aurelia/history@0.2.2",
       "core-js": "npm:core-js@0.4.10"
     },
-    "github:aurelia/http-client@0.5.0": {
+    "github:aurelia/http-client@0.5.2": {
       "aurelia-path": "github:aurelia/path@0.4.3",
       "core-js": "npm:core-js@0.4.10"
     },
@@ -151,6 +152,7 @@ System.config({
     },
     "npm:amdefine@0.1.0": {
       "fs": "github:jspm/nodelibs-fs@0.1.1",
+      "module": "github:jspm/nodelibs-module@0.1.0",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
@@ -215,6 +217,10 @@ System.config({
       "stream": "npm:stream-browserify@1.0.0",
       "string_decoder": "npm:string_decoder@0.10.31",
       "util": "github:jspm/nodelibs-util@0.1.0"
+    },
+    "npm:rx@2.3.25": {
+      "events": "github:jspm/nodelibs-events@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.1"
     },
     "npm:source-map@0.1.43": {
       "amdefine": "npm:amdefine@0.1.0",

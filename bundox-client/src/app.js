@@ -6,11 +6,9 @@ export class App {
   constructor(router) {
     this.router = router;
     this.router.configure(config => {
-      config.title = 'Aurelia';
+      config.title = 'Bundox';
       config.map([
-        { route: ['','welcome'],  moduleId: 'welcome',      nav: true, title:'Welcome' },
-        { route: 'flickr',        moduleId: 'flickr',       nav: true },
-        { route: 'child-router',  moduleId: 'child-router', nav: true, title:'Child Router' }
+        { route: ['', 'bundox'],        moduleId: 'bundox',       nav: false, title:'Bundox' },
       ]);
     });
   }

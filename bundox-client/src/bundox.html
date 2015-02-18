@@ -1,0 +1,14 @@
+<template>
+  <div class="container-fluid fill">
+    <div class="col-md-3">
+       <input type="input" value.bind="searchTerm" placeholder="search here"/>    
+       <ul>
+         <li repeat.for="item of items">
+           <compose model.bind="item"
+                    view-model="${item.type}-listitem" />
+         </li>
+       </ul>
+     </div>
+     <iframe class="col-md-9 fill" src.bind="src"></iframe>
+   </div>
+</template>

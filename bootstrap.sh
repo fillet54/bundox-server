@@ -69,7 +69,10 @@ echo Restarting GlassFish
 sudo service GlassFish_domain1 restart
 
 #Install Aurelia requirements
+sudo apt-get install git -y
 sudo apt-get install nodejs -y
+sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo apt-get install npm -y
 sudo npm install -g gulp
 sudo npm install -g jspm
+sudo npm install -g live-server
