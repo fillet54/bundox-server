@@ -2,6 +2,7 @@ package com.fiftycuatro.bundox.server.impl;
 
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
+import com.fiftycuatro.bundox.server.core.DocumentationItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,5 +45,15 @@ public class StaticDocumentRepository implements DocumentRepository {
                 .filter(d -> d.getName().equalsIgnoreCase(name))
                 .filter(d -> d.getVersion().equalsIgnoreCase(version))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void StoreDocuments(List<Document> documents) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void StoreDocumentationItems(List<DocumentationItem> documentationItems) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

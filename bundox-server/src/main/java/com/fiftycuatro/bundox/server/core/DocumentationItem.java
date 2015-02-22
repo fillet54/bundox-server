@@ -7,9 +7,9 @@ public class DocumentationItem {
     
     private final String subject;
     private final Document document;
-    private final URI path;
+    private final String path;
     
-    public DocumentationItem(String subject, Document document, URI path) {
+    public DocumentationItem(String subject, Document document, String path) {
         this.subject = subject;
         this.document = document;
         this.path = path;
@@ -23,7 +23,7 @@ public class DocumentationItem {
         return document;
     }
 
-    public URI getPath() {
+    public String getPath() {
         return path;
     }
 

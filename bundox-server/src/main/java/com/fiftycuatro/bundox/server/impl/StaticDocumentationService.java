@@ -42,19 +42,19 @@ public class StaticDocumentationService implements DocumentationService{
             switch (document.getId().toLowerCase()) {
                 case "java_1.6.0":
                     return Arrays.asList(
-                            new DocumentationItem("System.out.println", document, createURI("documents/java/1.6.0/System.html#println")),
-                            new DocumentationItem("File.WriteFile", document, createURI("documents/java/1.6.0/File.html#println")),
-                            new DocumentationItem("MyDocuments", document, createURI("documents/java/1.6.0/My.html#println")));
+                            new DocumentationItem("System.out.println", document, createPath("documents/java/1.6.0/System.html#println")),
+                            new DocumentationItem("File.WriteFile", document, createPath("documents/java/1.6.0/File.html#println")),
+                            new DocumentationItem("MyDocuments", document, createPath("documents/java/1.6.0/My.html#println")));
                 case "java_1.7.0":
                     return Arrays.asList(
-                            new DocumentationItem("System.out.println", document, createURI("documents/java/1.7.0/System.html#println")),
-                            new DocumentationItem("File.WriteFile", document, createURI("documents/java/1.7.0/File.html#println")),
-                            new DocumentationItem("MyDocuments", document, createURI("documents/java/1.7.0/My.html#println")));
+                            new DocumentationItem("System.out.println", document, createPath("documents/java/1.7.0/System.html#println")),
+                            new DocumentationItem("File.WriteFile", document, createPath("documents/java/1.7.0/File.html#println")),
+                            new DocumentationItem("MyDocuments", document, createPath("documents/java/1.7.0/My.html#println")));
                 default:
                     return Arrays.asList(
-                            new DocumentationItem("System.out.println", document, createURI("documents/scala/2.11.5/System.html#println")),
-                            new DocumentationItem("File.WriteFile", document, createURI("documents/scala/2.11.5/File.html#println")),
-                            new DocumentationItem("MyDocuments", document, createURI("documents/scala/2.11.5/My.html#println")));
+                            new DocumentationItem("System.out.println", document, createPath("documents/scala/2.11.5/System.html#println")),
+                            new DocumentationItem("File.WriteFile", document, createPath("documents/scala/2.11.5/File.html#println")),
+                            new DocumentationItem("MyDocuments", document, createPath("documents/scala/2.11.5/My.html#println")));
             }
         }
         catch (Exception e) {
@@ -62,14 +62,8 @@ public class StaticDocumentationService implements DocumentationService{
         }
     }
 
-    private URI createURI(String relativeURL) {
-        String basePath = "/static/";
-        try {
-            return new URI(basePath + relativeURL);
-        }
-        catch (Exception e) {
-            return null;
-        }
+    private String createPath(String relativePath) {
+        return String.format("/static/%s", relativePath);
     }
     
     @Override

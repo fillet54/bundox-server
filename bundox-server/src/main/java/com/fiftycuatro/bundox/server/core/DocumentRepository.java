@@ -8,4 +8,7 @@ public interface DocumentRepository {
     public List<Document> getAllDocuments();
     public List<Document> findDocumentsByName(String name);
     public List<Document> findDocumentsByNameAndVersion(String name, String version);
+    
+    public void StoreDocuments(List<Document> documents);
+    public void StoreDocumentationItems(List<DocumentationItem> documentationItems);
 }
