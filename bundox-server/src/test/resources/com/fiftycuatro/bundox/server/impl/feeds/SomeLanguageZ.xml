@@ -1,0 +1,10 @@
+<entry>
+    <version>1.0.3</version>
+    <ios_version>1</ios_version>
+    <url>http://fiftycuatro.com/feeds/SomeLanguageZ.tgz</url>
+    <url>http://mirror.fiftycuatro.com/feeds/SomeLanguageZ.tgz</url>
+    <other-versions>
+        <version><name>1.0.2</name></version>
+        <version><name>1.0.1</name></version>
+     </other-versions>
+</entry>
