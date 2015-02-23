@@ -3,9 +3,11 @@ package com.fiftycuatro.bundox.server.impl;
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import com.fiftycuatro.bundox.server.core.DocumentationItem;
+import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import junit.framework.Assert;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,12 +18,9 @@ import static org.mockito.Matchers.argThat;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 
-public class SQLiteDocsetImporterTest {
+public class DocumentInstallerImplTest {
 
-    private Document document;
-
-    public SQLiteDocsetImporterTest() {
-        document = new Document("SomeLanguage", "1.1.1");
+    public DocumentInstallerImplTest() {
     }
 
     @BeforeClass
@@ -42,26 +41,35 @@ public class SQLiteDocsetImporterTest {
 
     @Test
     public void canImportFromDashFormatDocSet() {
-        DocSet docSet = new DocSet(TestUtilities.getSomeLanguageDocSetPath());
-        canImportFromDocSet(docSet);
+        Document document = new Document("SomeLanguage", "1.1.1");
+        canImportFromDocSet(document, TestUtilities.getSomeLanguageDocSetArchivePath());
     }
 
     @Test
     public void canImportFromZFormatDocSet() {
-        DocSet docSet = new DocSet(TestUtilities.getSomeLanguageZDocSetPath());
-        canImportFromDocSet(docSet);
+        Document document = new Document("SomeLanguageZ", "1.1.1");
+        canImportFromDocSet(document, TestUtilities.getSomeLanguageZDocSetArchivePath());
     }
 
-    private void canImportFromDocSet(DocSet docSet) {
+    private void canImportFromDocSet(Document document, String archivePath) {
         DocumentRepository docRepo = Mockito.mock(DocumentRepository.class);
-        SQLiteDocSetImporter importer = new SQLiteDocSetImporter(document, docSet, docRepo);
+        String dataDirectory = TestUtilities.getTempDirWithDeleteOnExit();
+        DocumentInstallerImpl installer = new DocumentInstallerImpl(docRepo, dataDirectory);
 
-        importer.importDocSet();
+        installer.installDocumentFromDocSetArchive(document, archivePath);
 
-        verify(docRepo).StoreDocumentationItems(argThat(isListOfAllDocumentationItems()));
+        verify(docRepo).StoreDocumentationItems(argThat(isListOfAllDocumentationItems(document)));
+        assertDocSetWasExtractedToCorrectLocationOnDisk(document, dataDirectory);
+    }
+    
+    private void assertDocSetWasExtractedToCorrectLocationOnDisk(Document document, String dataDirectory) {
+        String expectedDocSetPath = String.format("%s/%s/%s/%s.docset",
+                dataDirectory, document.getName(), document.getVersion(), 
+                document.getName());
+        Assert.assertTrue((new File(expectedDocSetPath)).exists());
     }
 
-    private IsListOfAllDocumentationItems isListOfAllDocumentationItems() {
+    private IsListOfAllDocumentationItems isListOfAllDocumentationItems(Document document) {
         return new IsListOfAllDocumentationItems(document);
     }
 
