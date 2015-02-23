@@ -4,6 +4,7 @@ import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import com.fiftycuatro.bundox.server.core.DocumentationItem;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +59,7 @@ public class DocumentInstallerImplTest {
 
         installer.installDocumentFromDocSetArchive(document, archivePath);
 
+        verify(docRepo).StoreDocuments(argThat(isListOfDocument(document)));
         verify(docRepo).StoreDocumentationItems(argThat(isListOfAllDocumentationItems(document)));
         assertDocSetWasExtractedToCorrectLocationOnDisk(document, dataDirectory);
     }
@@ -69,6 +71,7 @@ public class DocumentInstallerImplTest {
         Assert.assertTrue((new File(expectedDocSetPath)).exists());
     }
 
+    
     private IsListOfAllDocumentationItems isListOfAllDocumentationItems(Document document) {
         return new IsListOfAllDocumentationItems(document);
     }
@@ -96,5 +99,26 @@ public class DocumentInstallerImplTest {
             all.add(new DocumentationItem("oneMoreFunction()", document, "directory1/file1.html#anotherAnchor"));
             return all;
         }
+    }
+    
+    private IsListOfDocument isListOfDocument(Document document) {
+        return new IsListOfDocument(document);
+    }
+    
+    class IsListOfDocument extends ArgumentMatcher<List> {
+
+        private Document document;
+
+        public IsListOfDocument(Document document) {
+            this.document = document;
+        }
+
+        public boolean matches(Object list) {
+            List items = (List) list;
+            List documentList = new ArrayList();
+            documentList.add(document);
+            return items.equals(documentList);
+        }
+
     }
 }

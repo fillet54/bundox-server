@@ -6,6 +6,7 @@ import com.fiftycuatro.bundox.server.core.DocumentInstaller;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import javax.inject.Inject;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
@@ -33,6 +34,7 @@ public class DocumentInstallerImpl implements DocumentInstaller {
 
     @Override
     public void installDocumentFromDocSetArchive(Document document, String docSetArchivePath) {
+        documentRepository.StoreDocuments(Arrays.asList(document));
         String extractedPath = extractDocSetArchive(document, docSetArchivePath);
         (new SQLiteDocSetImporter(document, documentRepository, extractedPath))
                 .importDocSet();

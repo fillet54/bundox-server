@@ -17,9 +17,11 @@ sudo apt-get install oracle-java8-set-default -y
 #setup glassfish
 #Add a new user called glassfish
 sudo adduser --home /home/glassfish --system --shell /bin/bash glassfish
+sudo adduser --home /home/elasticserach --system --shell /bin/bash elasticsearch
  
 #add a new group for glassfish administration
 sudo groupadd glassfishadm
+sudo groupadd elasticsearch
  
 #add your users that shall be Glassfish adminstrators
 #since this is a vagrant bootstrap lets just default to vagrant
@@ -76,3 +78,12 @@ sudo apt-get install npm -y
 sudo npm install -g gulp
 sudo npm install -g jspm
 sudo npm install -g live-server
+
+
+#Install Elasticsearch
+cd /tmp
+wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.4.deb
+sudo dpkg -i elasticsearch-1.4.4.deb
+rm elasticsearch-1.4.4.deb
+sudo update-rc.d elasticsearch defaults 95 10
+sudo service elasticsearch start
