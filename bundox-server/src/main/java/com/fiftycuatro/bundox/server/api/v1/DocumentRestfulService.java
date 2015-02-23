@@ -1,5 +1,6 @@
 package com.fiftycuatro.bundox.server.api.v1;
 
+import com.fiftycuatro.bundox.server.InjectedConfiguration;
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import com.fiftycuatro.bundox.server.core.DocumentationItem;
@@ -40,6 +41,11 @@ public class DocumentRestfulService {
     @Inject
     DocumentationService documentationService;
 
+    @Inject
+    @InjectedConfiguration(key="upload_file_path",
+                           defaultValue="/vagrant/uploads")
+    String uploadDirectory;
+    
     @GET
     @Path("/")
     @ApiOperation(value = "Get all documents", notes = "All documents that are avaliable",
@@ -79,17 +85,16 @@ public class DocumentRestfulService {
     @ApiOperation(value = "Documentats by name and version", notes = "Documents always have a name and a version",
             response = DocumentDTO.class)
     public Response addDocument(
-            @ApiParam(value = "Name of documents to fetch", required = true) @PathParam("name") String name,
-            @ApiParam(value = "Version of named documents", required = true) @PathParam("version") String version,
+            @ApiParam(value = "Name of document", required = true) @PathParam("name") String name,
+            @ApiParam(value = "Version of document", required = true) @PathParam("version") String version,
             @ApiParam(value = "DocSet tgz archive", required = true) @FormDataParam("file") InputStream uploadedInputStream,
             @FormDataParam("file") FormDataContentDisposition fileDetail) {
         
-        String dataDirectory = "/vagrant/uploads";
-        String archivePath = String.format("%s/%s_%s.tgz", dataDirectory, name, version);
+        String archivePath = String.format("%s/%s_%s.tgz", uploadDirectory, name, version);
         writeToFile(uploadedInputStream, archivePath);
         Document document = new Document(name, version);
         documentationService.installDocumentFromDocSetArchive(document, archivePath);
-        return Response.status(Response.Status.OK).entity(document).build();
+        return Response.status(Response.Status.OK).entity(Transformations.convertDocumentToDTO(document)).build();
     }
 
     @GET

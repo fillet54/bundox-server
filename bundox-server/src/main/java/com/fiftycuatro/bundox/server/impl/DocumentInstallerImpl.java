@@ -1,5 +1,6 @@
 package com.fiftycuatro.bundox.server.impl;
 
+import com.fiftycuatro.bundox.server.InjectedConfiguration;
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentInstaller;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
@@ -16,6 +17,9 @@ public class DocumentInstallerImpl implements DocumentInstaller {
     @Inject
     private DocumentRepository documentRepository;
 
+    @Inject
+    @InjectedConfiguration(key="data_directory",
+                           defaultValue="/vagrant/docsets")
     private String dataDirectory;
 
     public DocumentInstallerImpl() {

@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StaticDocumentRepository implements DocumentRepository {
+public class DocumentRepositoryImpl implements DocumentRepository {
 
     private List<Document> _documents;
     
-    public StaticDocumentRepository() {
+    public DocumentRepositoryImpl() {
         _documents =  new ArrayList<Document>();
         _documents.add(new Document("Java", "1.6.0"));
         _documents.add(new Document("Java", "1.7.0"));
@@ -54,6 +54,6 @@ public class StaticDocumentRepository implements DocumentRepository {
 
     @Override
     public void StoreDocumentationItems(List<DocumentationItem> documentationItems) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 }

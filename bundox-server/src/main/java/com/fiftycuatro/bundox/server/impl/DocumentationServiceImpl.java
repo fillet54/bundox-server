@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class DocumentationServiceImpl implements DocumentationService{
+public class DocumentationServiceImpl implements DocumentationService {
     private final Map<Document, List<DocumentationItem>> _documentation;
     
     @Inject
