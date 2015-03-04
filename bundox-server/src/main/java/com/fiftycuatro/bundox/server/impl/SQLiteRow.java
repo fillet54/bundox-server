@@ -17,7 +17,7 @@ public class SQLiteRow {
     }
 
     public String getString(int col) {
-        return columnData[col].toString();
+        return columnData[col] != null ? columnData[col].toString() : "";
     }
 
     public int getInt(String colName) {
@@ -25,8 +25,14 @@ public class SQLiteRow {
     }
 
     public int getInt(int col) {
-            // A little inefficient but probably okay. 
-        // Usually it would have already been an Integer
-        return Integer.parseInt(columnData[col].toString());
+        if (columnData[col] == null) {
+            return 0;
+        }
+        else if (columnData[col] instanceof Integer) {
+            return (Integer)columnData[col];
+        }
+        else {
+            return Integer.parseInt(columnData[col].toString());
+        }
     }
 }

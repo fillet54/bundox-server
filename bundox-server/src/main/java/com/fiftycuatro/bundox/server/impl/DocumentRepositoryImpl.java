@@ -3,9 +3,13 @@ package com.fiftycuatro.bundox.server.impl;
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import com.fiftycuatro.bundox.server.core.DocumentationItem;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -13,13 +17,22 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
-import static org.elasticsearch.index.query.QueryBuilders.wildcardQuery;
 import org.elasticsearch.search.SearchHit;
+import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
 public class DocumentRepositoryImpl implements DocumentRepository {
 
+    private static final Logger log = Logger.getLogger(DocumentRepository.class.getName());
+    private static final Logger logST = Logger.getLogger(DocumentRepository.class.getName() + ".stacktrace");
+    
+    private final String BUNDOX_INDEX = "bundox";
+    
     private final Client client;
 
     public DocumentRepositoryImpl() {
@@ -27,6 +40,104 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 .put("cluster.name", "bundox").build();
         client = new TransportClient(settings)
                 .addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
+    }
+    
+    @PostConstruct
+    public void InitializeIndices() {
+        boolean hasIndex = client.admin().indices().prepareExists(BUNDOX_INDEX)
+                .execute().actionGet().isExists();
+        if (!hasIndex) {
+            try {
+                log.info(String.format("Creating and setting up index '%s'", BUNDOX_INDEX));
+                XContentBuilder xb = XContentFactory.jsonBuilder();
+                xb.startObject();
+                    addSettings(xb);
+                    addMappings(xb);
+                xb.endObject();
+                
+                client.admin().indices().prepareCreate(BUNDOX_INDEX)
+                        .setSource(xb)
+                        .execute().actionGet();
+                log.info(String.format("Index '%s' sucessfully created", BUNDOX_INDEX));
+            }
+            catch (IOException e) {
+                log.info(String.format("Error while setting up index '%s'. %s", BUNDOX_INDEX, e.getMessage()));
+                logST.fine(getStackTrace(e));
+            }
+        }
+        else {
+            log.info(String.format("%s index already exists.", BUNDOX_INDEX));
+        }
+    }
+    
+    private void addSettings(XContentBuilder xb) throws IOException {
+        xb.startObject("settings");
+            xb.startObject("analysis");
+                addNGramFilter(xb, 2, 20);
+                xb.startObject("analyzer");
+                    addNGramAnalyzer(xb);
+                    addWhitespaceAnalyzer(xb);
+                xb.endObject();
+            xb.endObject();
+        xb.endObject();
+    }
+    
+    private void addNGramFilter(XContentBuilder xb, int min, int max) throws IOException {
+        xb.startObject("filter");
+            xb.startObject("nGram_filter");
+                xb.field("type", "nGram");
+                xb.field("min_gram", min);
+                xb.field("max_gram", max);
+                xb.field("token_chars", "letter", "digit", "punctuation", "symbol");
+            xb.endObject();
+        xb.endObject();
+    }
+    
+    private void addNGramAnalyzer(XContentBuilder xb) throws IOException {
+        xb.startObject("nGram_analyzer");
+            xb.field("type", "custom");
+            xb.field("tokenizer", "whitespace");
+            xb.field("filter", "lowercase", "asciifolding", "nGram_filter");
+        xb.endObject();       
+    }
+    
+    private void addWhitespaceAnalyzer(XContentBuilder xb) throws IOException {
+        xb.startObject("whitespace_analyzer");
+            xb.field("type", "custom");
+            xb.field("tokenizer", "whitespace");
+            xb.field("filter", "lowercase", "asciifolding");
+        xb.endObject();
+    }
+    
+    private void addMappings(XContentBuilder xb) throws IOException {
+        xb.startObject("mappings");
+            addDocumentationItemMapping(xb);
+        xb.endObject();    
+    }
+    
+    private void addDocumentationItemMapping(XContentBuilder xb) throws IOException {
+        xb.startObject("documentationItem");
+            xb.startObject("_all");
+                xb.field("index_analyzer", "nGram_analyzer");
+                xb.field("search_analyzer", "nGram_analyzer");   
+            xb.endObject();
+            xb.startObject("properties");
+                xb.startObject("subject");
+                    xb.field("type", "string");
+                    xb.field("index", "not_analyzed");
+                xb.endObject();
+                xb.startObject("document_id");
+                    xb.field("type", "string");
+                    xb.field("index", "not_analyzed");
+                    xb.field("include_in_all", false);
+                xb.endObject();
+                xb.startObject("path");
+                    xb.field("type", "string");
+                    xb.field("include_in_all", false);
+                    xb.field("index", "no");
+                xb.endObject();
+            xb.endObject();
+        xb.endObject();
     }
 
     @Override
@@ -87,13 +198,15 @@ public class DocumentRepositoryImpl implements DocumentRepository {
         return documents;
     }
 
+    @Override
     public List<DocumentationItem> searchDocumentation(String searchTerm, List<Document> documents, int maxResults) {
-
-        String wildCardSearch = getWildcard(searchTerm.toLowerCase());
         SearchResponse response = client.prepareSearch("bundox")
                 .setTypes("documentationItem")
-                .setQuery(termQuery("document_id", documents.get(0).getId().toLowerCase()))
-                .setQuery(wildcardQuery("subject", wildCardSearch))
+                .setQuery(boolQuery()
+                            .must(termQuery("document_id", documents.get(0).getId()))
+                            .must(matchQuery("_all", searchTerm))
+                            .should(termQuery("subject", searchTerm)))
+                .setFrom(0).setSize(maxResults).setExplain(true)
                 .execute()
                 .actionGet();
         List<DocumentationItem> documentation = new ArrayList<>();
@@ -109,7 +222,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
     }
 
     @Override
-    public void StoreDocuments(List<Document> documents) {
+    public void storeDocuments(List<Document> documents) {
         documents.stream()
                 .forEach(document -> {
                     try {
@@ -131,7 +244,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
     }
 
     @Override
-    public void StoreDocumentationItems(List<DocumentationItem> documentationItems) {
+    public void storeDocumentationItems(List<DocumentationItem> documentationItems) {
         documentationItems.stream()
                 .forEach(documentation -> {
                     try {
@@ -154,6 +267,24 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 });
     }
 
+    @Override
+    public void deleteDocument(Document document) {
+        DeleteByQueryResponse response = client.prepareDeleteByQuery("bundox")
+                .setTypes("document")
+                .setQuery(termQuery("name", document.getName().toLowerCase()))
+                .setQuery(termQuery("version", document.getVersion().toLowerCase()))
+                .execute()
+                .actionGet();   
+    }
+    @Override
+    public void deleteDocumentation(Document document) {
+        DeleteByQueryResponse response = client.prepareDeleteByQuery("bundox")
+                .setTypes("documentationItem")
+                .setQuery(termQuery("document_id", document.getId().toLowerCase()))
+                .execute()
+                .actionGet();
+    }
+
     private String getSuffixes(String str) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
@@ -162,7 +293,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
         }
         return builder.toString().trim();
     }
-    
+
     private String getWildcard(String str) {
         return "*" + str.replaceAll(".(?=.)", "$0*") + "*";
     }

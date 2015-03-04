@@ -62,6 +62,6 @@ see implementation details http://jersey.java.net/nonav/documentation/latest/jax
     </servlet>
     <filter-mapping>
         <filter-name>ApiOriginFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/${bundox.api.path}/*</url-pattern>
     </filter-mapping>
 </web-app>

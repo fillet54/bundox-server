@@ -7,4 +7,5 @@ public interface DocumentationService {
     public List<DocumentationItem> documentationForDocuments(List<Document> documents, int maxResults);
     
     public void installDocumentFromDocSetArchive(Document document, String docSetArchivePath);
+    public void reindexDocument(Document document);
 }

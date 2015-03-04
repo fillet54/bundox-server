@@ -59,8 +59,8 @@ public class DocumentInstallerImplTest {
 
         installer.installDocumentFromDocSetArchive(document, archivePath);
 
-        verify(docRepo).StoreDocuments(argThat(isListOfDocument(document)));
-        verify(docRepo).StoreDocumentationItems(argThat(isListOfAllDocumentationItems(document)));
+        verify(docRepo).storeDocuments(argThat(isListOfDocument(document)));
+        verify(docRepo).storeDocumentationItems(argThat(isListOfAllDocumentationItems(document)));
         assertDocSetWasExtractedToCorrectLocationOnDisk(document, dataDirectory);
     }
     

@@ -27,7 +27,7 @@ export class Bundox {
            .getObserver(this, 'searchTerm')
            .subscribe(term => observer.onNext(term));
      })
-     .debounce(750/*ms*/)
+     .debounce(400 /*ms*/)
      .distinctUntilChanged()
      .flatMapLatest(this.createSearcher())
      .subscribe(r => this.items = r);

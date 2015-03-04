@@ -20,7 +20,7 @@ public class DocumentInstallerImpl implements DocumentInstaller {
 
     @Inject
     @InjectedConfiguration(key="data_directory",
-                           defaultValue="/vagrant/docsets")
+                           defaultValue="/home/vagrant/docsets")
     private String dataDirectory;
 
     public DocumentInstallerImpl() {
@@ -34,15 +34,22 @@ public class DocumentInstallerImpl implements DocumentInstaller {
 
     @Override
     public void installDocumentFromDocSetArchive(Document document, String docSetArchivePath) {
-        documentRepository.StoreDocuments(Arrays.asList(document));
-        String extractedPath = extractDocSetArchive(document, docSetArchivePath);
-        (new SQLiteDocSetImporter(document, documentRepository, extractedPath))
+        documentRepository.storeDocuments(Arrays.asList(document));
+        String docSetDir = extractDocSetArchive(document, docSetArchivePath);
+        (new SQLiteDocSetImporter(document, documentRepository, docSetDir))
+                .importDocSet();
+    }
+    
+    @Override
+    public void reindex(Document document) {
+        documentRepository.deleteDocumentation(document);
+        String docSetDir = getDocSetDirectory(document);
+        (new SQLiteDocSetImporter(document, documentRepository, docSetDir))
                 .importDocSet();
     }
 
     private String extractDocSetArchive(Document document, String docSetArchivePath) {
-        String destinationPath = String.format("%s/%s/%s", dataDirectory,
-                    document.getName(), document.getVersion());
+        String destinationPath = getDestinationDirectory(document);
         try {
             
             File archive = new File(docSetArchivePath);
@@ -53,6 +60,17 @@ public class DocumentInstallerImpl implements DocumentInstaller {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return getDocSetDirectory(document);
+    }
+
+    private String getDestinationDirectory(Document document) {
+        String destinationPath = String.format("%s/%s/%s", dataDirectory,
+                document.getName(), document.getVersion());
+        return destinationPath;
+    }
+    
+    private String getDocSetDirectory(Document document) {
+        String destinationPath = getDestinationDirectory(document);
         return String.format("%s/%s.docset", destinationPath, document.getName());
     }
 }

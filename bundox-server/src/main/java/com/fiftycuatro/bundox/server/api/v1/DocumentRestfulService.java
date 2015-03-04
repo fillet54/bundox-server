@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -50,7 +51,7 @@ public class DocumentRestfulService {
     @Path("/")
     @ApiOperation(value = "Get all documents", notes = "All documents that are avaliable",
             response = DocumentDTO.class, responseContainer = "List")
-    public List<DocumentDTO> allDocuments() {
+    public List<DocumentDTO> documentIndex() {
         return documentRepository.getAllDocuments().stream()
                 .map(Transformations::convertDocumentToDTO)
                 .collect(Collectors.toList());
@@ -60,7 +61,7 @@ public class DocumentRestfulService {
     @Path("/{name}")
     @ApiOperation(value = "Documents by name", notes = "All documents that have the passed in name",
             response = DocumentDTO.class, responseContainer = "List")
-    public List<DocumentDTO> findDocumentsByName(
+    public List<DocumentDTO> documentsByName(
             @ApiParam(value = "Name of documents to fetch", required = true) @PathParam("name") String name) {
         return documentRepository.findDocumentsByName(name).stream()
                 .map(Transformations::convertDocumentToDTO)
@@ -71,10 +72,19 @@ public class DocumentRestfulService {
     @Path("/{name}/{version}")
     @ApiOperation(value = "Documents by name and version", notes = "Documents always have a name and a version",
             response = DocumentDTO.class, responseContainer = "List")
-    public List<DocumentDTO> findDocumentsById(
+    public List<DocumentDTO> documentByNameAndVersion(
             @ApiParam(value = "Name of documents to fetch", required = true) @PathParam("name") String name,
-            @ApiParam(value = "Version of named documents", required = true) @PathParam("version") String version) {
-        return documentRepository.findDocumentsByNameAndVersion(name, version).stream()
+            @ApiParam(value = "Version of named documents", required = true) @PathParam("version") String version,
+            @ApiParam(value = "Whether to re-index document", required = false, defaultValue="false") @DefaultValue("false") @QueryParam("reindex") boolean reindex) {
+        
+        List<Document> documents = documentRepository.findDocumentsByNameAndVersion(name, version);
+        
+        if (reindex) {
+            documents.stream()
+                    .forEach(document -> documentationService.reindexDocument(document));
+        }
+        
+        return documents.stream()
                 .map(Transformations::convertDocumentToDTO)
                 .collect(Collectors.toList());
     }
@@ -84,7 +94,7 @@ public class DocumentRestfulService {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @ApiOperation(value = "Documentats by name and version", notes = "Documents always have a name and a version",
             response = DocumentDTO.class)
-    public Response addDocument(
+    public Response createDocument(
             @ApiParam(value = "Name of document", required = true) @PathParam("name") String name,
             @ApiParam(value = "Version of document", required = true) @PathParam("version") String version,
             @ApiParam(value = "DocSet tgz archive", required = true) @FormDataParam("file") InputStream uploadedInputStream,
@@ -96,7 +106,20 @@ public class DocumentRestfulService {
         documentationService.installDocumentFromDocSetArchive(document, archivePath);
         return Response.status(Response.Status.OK).entity(Transformations.convertDocumentToDTO(document)).build();
     }
-
+    
+    @DELETE
+    @Path("/{name}/{version}")
+    @ApiOperation(value = "Documents by name and version", notes = "Documents always have a name and a version",
+            response = DocumentDTO.class)
+    public DocumentDTO deleteDocument(
+            @ApiParam(value = "Name of document", required = true) @PathParam("name") String name,
+            @ApiParam(value = "Version of document", required = true) @PathParam("version") String version) {
+        
+        Document document = new Document(name, version);
+        documentRepository.deleteDocument(document);
+        return Transformations.convertDocumentToDTO(document);
+    }
+    
     @GET
     @Path("/{name}/{version}/documentation")
     @ApiOperation(value = "Documentation for specific documents", notes = "Gets all documentation in all documents with matching name and version",

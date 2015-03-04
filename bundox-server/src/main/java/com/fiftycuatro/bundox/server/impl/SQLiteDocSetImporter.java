@@ -66,7 +66,7 @@ public class SQLiteDocSetImporter {
                     document,
                     row.getString("path")));
         });
-        documentRepository.StoreDocumentationItems(itemsToImport);
+        documentRepository.storeDocumentationItems(itemsToImport);
     }
 
     private void importZFormatDocSet() {
@@ -80,7 +80,7 @@ public class SQLiteDocSetImporter {
                     document,
                     path));
         });
-        documentRepository.StoreDocumentationItems(itemsToImport);
+        documentRepository.storeDocumentationItems(itemsToImport);
     }
 
     private boolean docSetDatabaseHasTableNamed(String tableName) {
