@@ -6,3 +6,8 @@ target/
 *-wal
 uploads/
 docsets/
+.project
+.classpath
+node_modules/
+jspm_packages/
+bundox-server/bin/

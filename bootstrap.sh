@@ -41,7 +41,8 @@ echo "AS_JAVA=$JAVA_HOME" >> /etc/environment
 sudo apt-get install unzip -y
 
 cd /tmp
-wget --progress=bar:force http://dlc.sun.com.edgesuite.net/glassfish/4.1/release/glassfish-4.1.zip
+#wget --progress=bar:force http://dlc.sun.com.edgesuite.net/glassfish/4.1/release/glassfish-4.1.zip
+wget --progress=bar:force http://download.java.net/glassfish/4.1/release/glassfish-4.1.zip 
 sudo unzip glassfish-4.1.zip -d /opt
 sudo chown -R glassfish:glassfishadm $GLASSFISH_HOME
 
@@ -82,8 +83,8 @@ sudo npm install -g live-server
 
 #Install Elasticsearch
 cd /tmp
-wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.4.deb
-sudo dpkg -i elasticsearch-1.4.4.deb
-rm elasticsearch-1.4.4.deb
+wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.7.2.deb
+sudo dpkg -i elasticsearch-1.7.2.deb
+rm elasticsearch-1.7.2.deb
 sudo update-rc.d elasticsearch defaults 95 10
 sudo service elasticsearch start
