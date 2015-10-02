@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
@@ -35,7 +36,9 @@ public class DocumentRepositoryImpl implements DocumentRepository {
     
     private final Client client;
 
+    @SuppressWarnings("resource")
     public DocumentRepositoryImpl() {
+        log.info("Creating Elasticsearch Document Repository");
         Settings settings = ImmutableSettings.settingsBuilder()
                 .put("cluster.name", "bundox").build();
         client = new TransportClient(settings)
@@ -68,6 +71,12 @@ public class DocumentRepositoryImpl implements DocumentRepository {
         else {
             log.info(String.format("%s index already exists.", BUNDOX_INDEX));
         }
+    }
+
+    @PreDestroy
+    public void Cleanup() {
+        log.info("Cleaning up Elasticsearch Document Repository for shutdown");
+        client.close();
     }
     
     private void addSettings(XContentBuilder xb) throws IOException {
