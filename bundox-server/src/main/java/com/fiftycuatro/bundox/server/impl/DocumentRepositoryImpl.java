@@ -3,13 +3,17 @@ package com.fiftycuatro.bundox.server.impl;
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import com.fiftycuatro.bundox.server.core.DocumentationItem;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Singleton;
+
 import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
@@ -20,13 +24,17 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+
 import org.elasticsearch.search.SearchHit;
+
 import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
+@Singleton
 public class DocumentRepositoryImpl implements DocumentRepository {
 
     private static final Logger log = Logger.getLogger(DocumentRepository.class.getName());
