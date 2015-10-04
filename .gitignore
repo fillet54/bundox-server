@@ -11,3 +11,5 @@ docsets/
 node_modules/
 jspm_packages/
 bundox-server/bin/
+workbench.xmi
+.settings/
