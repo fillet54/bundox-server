@@ -27,8 +27,9 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
-import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static org.elasticsearch.index.query.QueryBuilders.wildcardQuery;
+import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
 
 import org.elasticsearch.search.SearchHit;
 
@@ -220,9 +221,11 @@ public class DocumentRepositoryImpl implements DocumentRepository {
         SearchResponse response = client.prepareSearch("bundox")
                 .setTypes("documentationItem")
                 .setQuery(boolQuery()
+                            .must(wildcardQuery("subject", wildcardify(searchTerm)))
                             .must(termQuery("document_id", documents.get(0).getId()))
-                            .must(matchQuery("_all", searchTerm))
-                            .should(termQuery("subject", searchTerm)))
+                            .should(termQuery("subject", searchTerm).boost(10))
+                            .should(prefixQuery("subject", searchTerm).boost(2))
+                            .should(wildcardQuery("subject", wildcardify(searchTerm).substring(1))))
                 .setFrom(0).setSize(maxResults).setExplain(true)
                 .execute()
                 .actionGet();
@@ -236,6 +239,10 @@ public class DocumentRepositoryImpl implements DocumentRepository {
             ));
         }
         return documentation;
+    }
+
+    private String wildcardify(String term) {
+        return term.replaceAll("", "*");
     }
 
     @Override
