@@ -1,5 +1,6 @@
 package com.fiftycuatro.bundox.server.impl;
 
+import com.fiftycuatro.bundox.server.cdi.BackingStore;
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import com.fiftycuatro.bundox.server.core.DocumentationItem;
@@ -36,6 +37,7 @@ import org.elasticsearch.search.SearchHit;
 import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
 @Singleton
+@BackingStore
 public class DocumentRepositoryImpl implements DocumentRepository {
 
     private static final Logger log = Logger.getLogger(DocumentRepository.class.getName());

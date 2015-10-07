@@ -1,13 +1,17 @@
 package com.fiftycuatro.bundox.server.impl;
 
 import com.fiftycuatro.bundox.server.InjectedConfiguration;
+import com.fiftycuatro.bundox.server.cdi.BackingStore;
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentInstaller;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+
 import javax.inject.Inject;
+
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
@@ -16,6 +20,7 @@ import org.rauschig.jarchivelib.CompressionType;
 public class DocumentInstallerImpl implements DocumentInstaller {
 
     @Inject
+    @BackingStore
     private DocumentRepository documentRepository;
 
     @Inject

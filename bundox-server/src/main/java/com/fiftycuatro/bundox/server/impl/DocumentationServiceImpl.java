@@ -1,14 +1,17 @@
 package com.fiftycuatro.bundox.server.impl;
 
 import com.fiftycuatro.bundox.server.InjectedConfiguration;
+import com.fiftycuatro.bundox.server.cdi.SortingStore;
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentInstaller;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import com.fiftycuatro.bundox.server.core.DocumentationItem;
 import com.fiftycuatro.bundox.server.core.DocumentationService;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,6 +20,7 @@ import javax.inject.Singleton;
 public class DocumentationServiceImpl implements DocumentationService {
 
     @Inject
+    @SortingStore
     DocumentRepository documentRepository;
 
     @Inject
