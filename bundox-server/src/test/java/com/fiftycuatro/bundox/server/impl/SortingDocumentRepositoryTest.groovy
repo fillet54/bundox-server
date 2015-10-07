@@ -89,7 +89,7 @@ public class SortingDocumentRepositoryTest extends Specification {
     
     def "delegates to backing document repository for storeDocumentationItems"() {
         setup:
-        def someDocumentation = [new DocumentationItem("Subject", new Document("Doc1", "1.1"), "path/to/file")];
+        def someDocumentation = [new DocumentationItem("Subject", new Document("Doc1", "1.1"), "path/to/file", "Method")];
 
         when:
         sortingRepo.storeDocumentationItems(someDocumentation);
@@ -101,9 +101,9 @@ public class SortingDocumentRepositoryTest extends Specification {
     def "sorts searchDocumenationItems by fewest splits"() {
         setup:
         def unsortedDocItems = [
-            new DocumentationItem("File_Input_Stream", defaultDocument, defaultPath),
-            new DocumentationItem("File_Input_Str_eam", defaultDocument, defaultPath),
-            new DocumentationItem("FileInputStream", defaultDocument, defaultPath),
+            new DocumentationItem("File_Input_Stream", defaultDocument, defaultPath, "Method"),
+            new DocumentationItem("File_Input_Str_eam", defaultDocument, defaultPath, "Method"),
+            new DocumentationItem("FileInputStream", defaultDocument, defaultPath, "Method"),
         ]
 
         when:
@@ -117,9 +117,9 @@ public class SortingDocumentRepositoryTest extends Specification {
     def "sorts searchDocumenationItems by start location of first matching character"() {
         setup:
         def unsortedDocItems = [
-            new DocumentationItem("FileInputStream", defaultDocument, defaultPath),
-            new DocumentationItem("__FileInputStream", defaultDocument, defaultPath),
-            new DocumentationItem("_FileInputStream", defaultDocument, defaultPath),
+            new DocumentationItem("FileInputStream", defaultDocument, defaultPath, "Method"),
+            new DocumentationItem("__FileInputStream", defaultDocument, defaultPath, "Method"),
+            new DocumentationItem("_FileInputStream", defaultDocument, defaultPath, "Method"),
         ]
 
         when:
@@ -133,9 +133,9 @@ public class SortingDocumentRepositoryTest extends Specification {
     def "sorts searchDocumenationItems by longest matching segment "() {
         setup:
         def unsortedDocItems = [
-            new DocumentationItem("FileIn_putStream", defaultDocument, defaultPath),
-            new DocumentationItem("FileInputStream", defaultDocument, defaultPath),
-            new DocumentationItem("FileInpu_tStream", defaultDocument, defaultPath),
+            new DocumentationItem("FileIn_putStream", defaultDocument, defaultPath, "Method"),
+            new DocumentationItem("FileInputStream", defaultDocument, defaultPath, "Method"),
+            new DocumentationItem("FileInpu_tStream", defaultDocument, defaultPath, "Method"),
         ]
 
         when:
@@ -149,9 +149,9 @@ public class SortingDocumentRepositoryTest extends Specification {
     def "sorts searchDocumenationItems by shortest subject length "() {
         setup:
         def unsortedDocItems = [
-            new DocumentationItem("FileInput", defaultDocument, defaultPath),
-            new DocumentationItem("FileInputStreamWriter", defaultDocument, defaultPath),
-            new DocumentationItem("FileInputStream", defaultDocument, defaultPath),
+            new DocumentationItem("FileInput", defaultDocument, defaultPath, "Method"),
+            new DocumentationItem("FileInputStreamWriter", defaultDocument, defaultPath, "Method"),
+            new DocumentationItem("FileInputStream", defaultDocument, defaultPath, "Method"),
         ]
 
         when:
