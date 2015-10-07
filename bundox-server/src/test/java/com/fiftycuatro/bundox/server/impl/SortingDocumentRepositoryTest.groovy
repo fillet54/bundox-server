@@ -18,10 +18,11 @@ public class SortingDocumentRepositoryTest extends Specification {
 
     Document defaultDocument = new Document("Doc1", "1.1");
     String defaultPath = "some/path/string";
+    String defaultType = "Method";
 
     def "delegates to backing document repository for getAllDocuments"() {
         setup:
-        def allDocuments = [new Document("Doc1", "1.1"), new Document("Doc2", "3.3")]
+        def allDocuments = [docWithNameAndVersion("Doc1", "1.1"), docWithNameAndVersion("Doc1", "4.5")]
 
         when:
         def documents = sortingRepo.getAllDocuments()
@@ -33,7 +34,7 @@ public class SortingDocumentRepositoryTest extends Specification {
 
     def "delegates to backing document repository for deleteDocument"() {
         setup:
-        def docToDelete = new Document("Doc1", "1.1")
+        def docToDelete = defaultDocument 
 
         when:
         sortingRepo.deleteDocument(docToDelete);
@@ -44,8 +45,7 @@ public class SortingDocumentRepositoryTest extends Specification {
     
     def "delegates to backing document repository for deleteDocumentation"() {
         setup:
-        def docToDelete = new Document("Doc1", "1.1")
-
+        def docToDelete = defaultDocument 
         when:
         sortingRepo.deleteDocumentation(docToDelete);
 
@@ -55,7 +55,7 @@ public class SortingDocumentRepositoryTest extends Specification {
     
     def "delegates to backing document repository for findDocumentsByName"() {
         setup:
-        def someDocuments = [new Document("Doc1", "1.1"), new Document("Doc1", "4.5")]
+        def someDocuments = [docWithNameAndVersion("Doc1", "1.1"), docWithNameAndVersion("Doc1", "4.5")]
 
         when:
         def documents = sortingRepo.findDocumentsByName("Doc1");
@@ -66,7 +66,7 @@ public class SortingDocumentRepositoryTest extends Specification {
     }
 
     def "delegates to backing document repository for findDocumentsByNameAndVersion"() { setup:
-        def someDocuments = [new Document("Doc1", "1.1")]
+        def someDocuments = [docWithNameAndVersion("Doc1", "1.1")]
 
         when:
         def documents = sortingRepo.findDocumentsByNameAndVersion("Doc1", "1.1");
@@ -78,7 +78,7 @@ public class SortingDocumentRepositoryTest extends Specification {
 
     def "delegates to backing document repository for storeDocuments"() {
         setup:
-        def someDocuments = [new Document("Doc1", "1.1")]
+        def someDocuments = [defaultDocument]
 
         when:
         sortingRepo.storeDocuments(someDocuments);
@@ -89,7 +89,7 @@ public class SortingDocumentRepositoryTest extends Specification {
     
     def "delegates to backing document repository for storeDocumentationItems"() {
         setup:
-        def someDocumentation = [new DocumentationItem("Subject", new Document("Doc1", "1.1"), "path/to/file", "Method")];
+        def someDocumentation = [docItemWithSubject("SomeSubject")];
 
         when:
         sortingRepo.storeDocumentationItems(someDocumentation);
@@ -101,9 +101,9 @@ public class SortingDocumentRepositoryTest extends Specification {
     def "sorts searchDocumenationItems by fewest splits"() {
         setup:
         def unsortedDocItems = [
-            new DocumentationItem("File_Input_Stream", defaultDocument, defaultPath, "Method"),
-            new DocumentationItem("File_Input_Str_eam", defaultDocument, defaultPath, "Method"),
-            new DocumentationItem("FileInputStream", defaultDocument, defaultPath, "Method"),
+            docItemWithSubject("File_Input_Stream"),
+            docItemWithSubject("File_Input_Str_eam"),
+            docItemWithSubject("FileInputStream")
         ]
 
         when:
@@ -117,9 +117,9 @@ public class SortingDocumentRepositoryTest extends Specification {
     def "sorts searchDocumenationItems by start location of first matching character"() {
         setup:
         def unsortedDocItems = [
-            new DocumentationItem("FileInputStream", defaultDocument, defaultPath, "Method"),
-            new DocumentationItem("__FileInputStream", defaultDocument, defaultPath, "Method"),
-            new DocumentationItem("_FileInputStream", defaultDocument, defaultPath, "Method"),
+            docItemWithSubject("FileInputStream"),
+            docItemWithSubject("__FileInputStream"),
+            docItemWithSubject("_FileInputStream")
         ]
 
         when:
@@ -133,9 +133,9 @@ public class SortingDocumentRepositoryTest extends Specification {
     def "sorts searchDocumenationItems by longest matching segment "() {
         setup:
         def unsortedDocItems = [
-            new DocumentationItem("FileIn_putStream", defaultDocument, defaultPath, "Method"),
-            new DocumentationItem("FileInputStream", defaultDocument, defaultPath, "Method"),
-            new DocumentationItem("FileInpu_tStream", defaultDocument, defaultPath, "Method"),
+            docItemWithSubject("FileIn_putStream"),
+            docItemWithSubject("FileInputStream"),
+            docItemWithSubject("FileInpu_tStream")
         ]
 
         when:
@@ -149,9 +149,9 @@ public class SortingDocumentRepositoryTest extends Specification {
     def "sorts searchDocumenationItems by shortest subject length "() {
         setup:
         def unsortedDocItems = [
-            new DocumentationItem("FileInput", defaultDocument, defaultPath, "Method"),
-            new DocumentationItem("FileInputStreamWriter", defaultDocument, defaultPath, "Method"),
-            new DocumentationItem("FileInputStream", defaultDocument, defaultPath, "Method"),
+            docItemWithSubject("FileInput"),
+            docItemWithSubject("FileInputStreamWriter"),
+            docItemWithSubject("FileInputStream")
         ]
 
         when:
@@ -160,5 +160,33 @@ public class SortingDocumentRepositoryTest extends Specification {
         then:
         1 * backingRepo.searchDocumentation("FileInput", [defaultDocument], 10) >> unsortedDocItems
         sortedDocItems == [unsortedDocItems[0], unsortedDocItems[2], unsortedDocItems[1]]
+    }
+    
+    def "sorts searchDocumenationItems by type "() {
+        setup:
+        def unsortedDocItems = [
+            docItemWithSubjectAndType("FileInput", "Method"),
+            docItemWithSubjectAndType("FileInput", "Class"),
+            docItemWithSubjectAndType("FileInput", "Function")
+        ]
+
+        when:
+        def sortedDocItems = sortingRepo.searchDocumentation("FileInput", [defaultDocument], 10);
+
+        then:
+        1 * backingRepo.searchDocumentation("FileInput", [defaultDocument], 10) >> unsortedDocItems
+        sortedDocItems == [unsortedDocItems[1], unsortedDocItems[0], unsortedDocItems[2]]
+    }
+
+    def docWithNameAndVersion(name, version) {
+        new Document(name, version);
+    }
+
+    def docItemWithSubject(subject) {
+        new DocumentationItem(subject, defaultDocument, defaultPath, defaultType);
+    }
+
+    def docItemWithSubjectAndType(subject, type) {
+        new DocumentationItem(subject, defaultDocument, defaultPath, type);
     }
 }

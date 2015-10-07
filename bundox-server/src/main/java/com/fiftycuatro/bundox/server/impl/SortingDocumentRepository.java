@@ -2,7 +2,9 @@ package com.fiftycuatro.bundox.server.impl;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.fiftycuatro.bundox.server.cdi.BackingStore;
@@ -55,21 +57,22 @@ public class SortingDocumentRepository implements DocumentRepository {
     public List<DocumentationItem> searchDocumentation(String searchTerm, List<Document> documents, int maxResults) {
         List<DocumentationItem> unsorted = backingRepo.searchDocumentation(searchTerm, documents, maxResults);
         return unsorted.stream()
-               .sorted((e1, e2) -> compareMultiple(searchTerm, e1.getSubject(), e2.getSubject()))
+               .sorted((e1, e2) -> compareMultiple(searchTerm, e1, e2))
                .collect(Collectors.toList());
 
     }
 
-    private int compareMultiple(String search, String value1, String value2) {
-        List<TriFunction<String,String,String,Integer>> measures = new ArrayList<>();
-        measures.add((s,v1, v2) -> compareByStartLocation(s, v1, v2));
-        measures.add((s,v1, v2) -> compareByNumOfSplits(s, v1, v2));
-        measures.add((s,v1, v2) -> compareByLongestSegment(s, v1, v2));
-        measures.add((s,v1, v2) -> compareByLength(s, v1, v2));
+    private int compareMultiple(String search, DocumentationItem docItem1, DocumentationItem docItem2) {
+        List<TriFunction<String,DocumentationItem,DocumentationItem,Integer>> comparers = new ArrayList<>();
+        comparers.add((s,d1,d2) -> compareByStartLocation(s, d1.getSubject(), d2.getSubject()));
+        comparers.add((s,d1,d2) -> compareByNumOfSplits(s, d1.getSubject(), d2.getSubject()));
+        comparers.add((s,d1,d2) -> compareByLongestSegment(s, d1.getSubject(), d2.getSubject()));
+        comparers.add((s,d1,d2) -> compareByLength(s, d1.getSubject(), d2.getSubject()));
+        comparers.add((s,d1,d2) -> compareByType(s, d1.getType(), d2.getType()));
 
         int compare = 0;
-        for (TriFunction<String,String,String,Integer> measure : measures) {
-            compare = measure.apply(search, value1, value2);
+        for (TriFunction<String,DocumentationItem,DocumentationItem,Integer> comparer : comparers) {
+            compare = comparer.apply(search, docItem1, docItem2);
             if (compare != 0) {
                 return compare;
             }
@@ -142,7 +145,25 @@ public class SortingDocumentRepository implements DocumentRepository {
         }
         return segments;
     }
-            
+
+    public int compareByType(String search, String t1, String t2) {
+       int maxCompare = 100;
+       Map<String, Integer> typeToCompare = new HashMap<>();
+       typeToCompare.put("Class", 0);
+       typeToCompare.put("Method", 1);
+       typeToCompare.put("Function", 1);
+     
+       int t1Compare = maxCompare;
+       int t2Compare = maxCompare;
+       if (typeToCompare.containsKey(t1)) {
+           t1Compare = typeToCompare.get(t1);
+       }
+       if (typeToCompare.containsKey(t2)) {
+           t2Compare = typeToCompare.get(t2);
+       }
+       return t1Compare - t2Compare;
+    }
+
     public void storeDocuments(List<Document> documents) {
         backingRepo.storeDocuments(documents);
     }

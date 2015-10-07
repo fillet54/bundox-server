@@ -22,7 +22,7 @@ export class BundoxService {
 
    searchAllDocumentation(searchTerm) {
      return this.http.get(bundoxApiBase + allDocumentationSearchEndPoint + searchTerm).then(response => {
-           return response.content.map(r => new DocumentationResult(r.subject, r.path));
+           return response.content.map(r => new DocumentationResult(r.subject, r.path, r.type));
      });
    }
 }
