@@ -1,6 +1,7 @@
 package com.fiftycuatro.bundox.server.api.v1;
 
 import com.fiftycuatro.bundox.server.InjectedConfiguration;
+import com.fiftycuatro.bundox.server.cdi.SortingStore;
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import com.fiftycuatro.bundox.server.core.DocumentationItem;
@@ -8,6 +9,7 @@ import com.fiftycuatro.bundox.server.core.DocumentationService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -28,6 +31,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -37,6 +41,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 public class DocumentRestfulService {
 
     @Inject
+    @SortingStore
     DocumentRepository documentRepository;
 
     @Inject
