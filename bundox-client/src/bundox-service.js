@@ -1,6 +1,11 @@
 import {HttpClient} from 'aurelia-http-client';
 import {Document} from './document';
 import {DocumentationResult} from './documentation-result';
+import {LogManager} from 'aurelia-framework';
+import {mimeTypes} from 'aurelia-http-client';
+
+// Not sure if this is how the API is intended
+mimeTypes['application/bundox.api.v1+json'] = 'json';
 
 var bundoxApiBase = 'http://localhost:8080/bundox/api/';
 var documentEndPoint  = 'documents/';
@@ -8,7 +13,8 @@ var allDocumentationSearchEndPoint = 'documents/documentation?searchTerm=';
 
 export class BundoxService {
    static inject() { return [HttpClient]; }
-   constructor(http) {
+   constructor(http, logging) {
+      this.log = LogManager.getLogger('BundoxService');
       this.http = http.configure(c => {
          c.withHeader('Accept', 'application/bundox.api.v1+json');
       });

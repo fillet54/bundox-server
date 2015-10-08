@@ -1,15 +1,15 @@
-import {LogManager} from 'aurelia-framework';
-import {ConsoleAppender} from 'aurelia-logging-console';
-
-LogManager.addAppender(new ConsoleAppender());
-LogManager.setLevel(LogManager.levels.debug);
+import 'bootstrap';
 
 export function configure(aurelia) {
   aurelia.use
-    .defaultBindingLanguage()
-    .defaultResources()
-    .router()
-    .eventAggregator()
+    .standardConfiguration()
+    .developmentLogging();
 
-  aurelia.start().then(a => a.setRoot('app', document.body));
+  //Uncomment the line below to enable animation.
+  //aurelia.use.plugin('aurelia-animator-css');
+
+  //Anyone wanting to use HTMLImports to load views, will need to install the following plugin.
+  //aurelia.use.plugin('aurelia-html-import-template-loader')
+
+  aurelia.start().then(a => a.setRoot());
 }
