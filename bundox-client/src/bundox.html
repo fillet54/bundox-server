@@ -1,8 +1,8 @@
 <template>
   <div class="container-fluid fill">
-    <div class="col-md-3">
+    <div class="col-md-3 search">
        <input type="input" value.bind="searchTerm" placeholder="search here"/>    
-       <ul>
+       <ul class="searchResults">
          <li repeat.for="item of items">
            <compose model.bind="item"
                     view-model="${item.type}-listitem" />
