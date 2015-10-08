@@ -17,7 +17,8 @@ public class Transformations {
         DocumentationItemDTO dto = new DocumentationItemDTO();
         dto.setSubject(docItem.getSubject());
         dto.setDocumentId(docItem.getDocument().getId());
-        dto.setPath(docItem.getPath().toString());
+        dto.setPath(docItem.getPath());
+        dto.setType(docItem.getType());
         return dto;
     }
 }

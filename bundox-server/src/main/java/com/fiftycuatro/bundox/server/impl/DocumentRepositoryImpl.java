@@ -237,7 +237,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
             documentation.add(new DocumentationItem(
                     result.get("subject").toString(),
                     documents.get(0),
-                    result.get("path").toString()
+                    result.get("path").toString(),
+                    result.get("type").toString()
             ));
         }
         return documentation;
@@ -281,7 +282,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                                 .field("subject", documentation.getSubject())
                                 .field("document_id", documentation.getDocument().getId())
                                 .field("path", documentation.getPath())
-                                //.field("suffixes", getSuffixes(documentation.getSubject()))
+                                .field("type", documentation.getType())
                                 .endObject()
                         )
                         .execute()

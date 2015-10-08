@@ -7,6 +7,7 @@ export class DocumentationResultListItem {
    constructor(selectionModel, documentationNavModel, observerLocator) {
       this.displayText = "";
       this.path = "#";
+      this.entryType = "";
       this.isSelected = false;
       this.selectionModel = selectionModel;
       this.documentationNavModel = documentationNavModel;
@@ -15,7 +16,8 @@ export class DocumentationResultListItem {
 
    activate(model) {
       this.displayText = model.subject;
-      this.path = model.path
+      this.path = model.path;
+      this.entryType = model.entryType ? model.entryType.charAt(0) : "U";
       this.observeSelected();
    }
 

@@ -1,6 +1,5 @@
 package com.fiftycuatro.bundox.server.core;
 
-import java.net.URI;
 import java.util.Objects;
 
 public class DocumentationItem {
@@ -8,11 +7,13 @@ public class DocumentationItem {
     private final String subject;
     private final Document document;
     private final String path;
+    private final String type;
     
-    public DocumentationItem(String subject, Document document, String path) {
+    public DocumentationItem(String subject, Document document, String path, String type) {
         this.subject = subject;
         this.document = document;
         this.path = path;
+        this.type = type;
     }
 
     public String getSubject() {
@@ -27,12 +28,17 @@ public class DocumentationItem {
         return path;
     }
 
+    public String getType() {
+        return type;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 41 * hash + Objects.hashCode(this.subject);
         hash = 41 * hash + Objects.hashCode(this.document);
         hash = 41 * hash + Objects.hashCode(this.path);
+        hash = 41 * hash + Objects.hashCode(this.type);
         return hash;
     }
 
@@ -52,6 +58,9 @@ public class DocumentationItem {
             return false;
         }
         if (!Objects.equals(this.path, other.path)) {
+            return false;
+        }
+        if (!Objects.equals(this.type, other.type)) {
             return false;
         }
         return true;

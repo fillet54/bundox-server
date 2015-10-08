@@ -29,9 +29,10 @@ public class SQLiteDocSetImporter {
     private final SQLiteQueryExecutor queryExecutor;
 
     private final String dashFormatQuery = "SELECT * FROM searchIndex";
-    private final String zFormatQuery = "SELECT ZTOKENNAME,ZPATH,ZANCHOR FROM ZTOKEN as t "
+    private final String zFormatQuery = "SELECT ZTOKENNAME,ZPATH,ZANCHOR,ZTYPENAME FROM ZTOKEN as t "
             + "JOIN ZTOKENMETAINFORMATION as m ON t.ZMETAINFORMATION = m.Z_PK "
-            + "JOIN ZFILEPATH as f ON m.ZFILE = f.Z_PK";
+            + "JOIN ZFILEPATH as f ON m.ZFILE = f.Z_PK "
+            + "JOIN ZTOKENTYPE as n ON t.ZTOKENTYPE = n.Z_PK";
     private final String tableNameQueryFormat = "SELECT COUNT(*) FROM sqlite_master WHERE name='%s'";
 
     public SQLiteDocSetImporter(Document document, DocumentRepository documentRepository,
@@ -64,7 +65,8 @@ public class SQLiteDocSetImporter {
             itemsToImport.add(new DocumentationItem(
                     row.getString("name"),
                     document,
-                    row.getString("path")));
+                    row.getString("path"),
+                    row.getString("type")));
         });
         documentRepository.storeDocumentationItems(itemsToImport);
     }
@@ -78,7 +80,8 @@ public class SQLiteDocSetImporter {
             itemsToImport.add(new DocumentationItem(
                     row.getString("ZTOKENNAME"),
                     document,
-                    path));
+                    path,
+                    row.getString("ZTYPENAME")));
         });
         documentRepository.storeDocumentationItems(itemsToImport);
     }

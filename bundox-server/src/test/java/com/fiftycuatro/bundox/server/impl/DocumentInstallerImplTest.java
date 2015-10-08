@@ -94,9 +94,9 @@ public class DocumentInstallerImplTest {
 
         private Set allDocumentationItemSet() {
             Set all = new HashSet();
-            all.add(new DocumentationItem("someFunction(int x)", document, "index.html#someFunctionAnchor"));
-            all.add(new DocumentationItem("someOtherFunction()", document, "index.html#someOtherFunctionAnchor"));
-            all.add(new DocumentationItem("oneMoreFunction()", document, "directory1/file1.html#anotherAnchor"));
+            all.add(new DocumentationItem("someFunction(int x)", document, "index.html#someFunctionAnchor", "Method"));
+            all.add(new DocumentationItem("someOtherFunction()", document, "index.html#someOtherFunctionAnchor", "Method"));
+            all.add(new DocumentationItem("oneMoreFunction()", document, "directory1/file1.html#anotherAnchor", "Method"));
             return all;
         }
     }
