@@ -227,6 +227,11 @@ div.au-stagger {
   height: 100%;
   overflow-y: scroll;
 }
+.document-subject {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* Split-Pane Styles */
 .split-pane {
