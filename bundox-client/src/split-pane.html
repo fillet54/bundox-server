@@ -1,11 +1,11 @@
 <template>
-<div class="split-pane" style="width: 100%; height: 100%">
-  <div class="left-pane-content" style="float: left; width: 25%; height: 100%">
+<div class="split-pane">
+  <div class="left-pane-content">
       <span></span>
-      <div class="dragbar" style="float:right; height: 100%; width: 3px; background-color: black; cursor: col-resize"></div>
+      <div class="dragbar"></div>
       <content select="split-pane-left"></content> 
     </div>
-    <div class="right-pane-content" style="float: right; solid; width: 75%; height: 100%">
+    <div class="right-pane-content">
       <content select="split-pane-right"></content> 
     </div>
   </div>
