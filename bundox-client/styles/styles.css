@@ -34,7 +34,7 @@ body {
   top: 50px;
   bottom: 0;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 @media print {
@@ -210,4 +210,71 @@ div.au-stagger {
 .searchResults {
   list-style: none;
   padding-left: 0;
+}
+
+.documentation-pane {
+  height: 100%;
+}
+
+.documentation-frame {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-style: none;
+}
+
+.search-pane {
+  height: 100%;
+  overflow-y: scroll;
+}
+.document-subject {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Split-Pane Styles */
+.split-pane {
+  width: 100%;
+  height: 100%;
+}
+
+.left-pane-content {
+  float: left;
+  width: 25%;
+  height: 100%;
+}
+
+.right-pane-content {
+  float: right;
+  width: 75%;
+  height: 100%;
+}
+
+.dragbar {
+  float: right;
+  height: 100%;
+  width: 8px;
+  padding-right: 9px;
+  background: url(/img/handle-v.png) 3px 50% no-repeat;
+  cursor: col-resize;
+  border-left-style: solid;
+  border-right-style: solid;
+  border-bottom-style: none;
+  border-top-style: none;
+  border-width: 1px;
+  border-color: #aaa;
+}
+
+#ghostbar {
+  background-color: black;
+  opacity: 0.5;
+}
+
+#ghostpaneLeft {
+  opacity: 0;
+}
+
+#ghostpaneRight {
+  opacity: 0;
 }

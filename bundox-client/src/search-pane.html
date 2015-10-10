@@ -1,0 +1,11 @@
+<template>
+  <div class="search-pane">
+    <input type="input" value.bind="searchTerm" placeholder="search here"/>
+    <ul class="searchResults">
+      <li repeat.for="item of items">
+      <compose model.bind="item"
+               view-model="${item.type}-listitem" />
+      </li>
+    </ul>
+  </div>
+</template>

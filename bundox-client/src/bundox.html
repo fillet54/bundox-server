@@ -1,14 +1,10 @@
 <template>
-  <div class="container-fluid fill">
-    <div class="col-md-3 search">
-       <input type="input" value.bind="searchTerm" placeholder="search here"/>    
-       <ul class="searchResults">
-         <li repeat.for="item of items">
-           <compose model.bind="item"
-                    view-model="${item.type}-listitem" />
-         </li>
-       </ul>
-     </div>
-     <iframe class="col-md-9 fill" src.bind="src"></iframe>
-   </div>
+  <require from='split-pane'></require>
+  <require from='split-pane-left'></require>
+  <require from='split-pane-right'></require>
+
+   <split-pane>
+     <split-pane-left content="search-pane"></split-pane-left>
+     <split-pane-right content="documentation-pane"></split-pane-right>
+   </split-pane1>
 </template>
