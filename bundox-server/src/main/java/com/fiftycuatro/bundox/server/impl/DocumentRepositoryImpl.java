@@ -7,9 +7,11 @@ import com.fiftycuatro.bundox.server.core.DocumentationItem;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -65,12 +67,17 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 log.info(String.format("Creating and setting up index '%s'", BUNDOX_INDEX));
                 XContentBuilder xb = XContentFactory.jsonBuilder();
                 xb.startObject();
+                    xb.field("template", BUNDOX_INDEX + "-*");
                     addSettings(xb);
                     addMappings(xb);
                 xb.endObject();
                 
+                client.admin().indices().preparePutTemplate(BUNDOX_INDEX)
+                    .setSource(xb)
+                    .execute().actionGet();
+                log.info(String.format("Mapping templates '%s' sucessfully created", BUNDOX_INDEX+"-*"));
+
                 client.admin().indices().prepareCreate(BUNDOX_INDEX)
-                        .setSource(xb)
                         .execute().actionGet();
                 log.info(String.format("Index '%s' sucessfully created", BUNDOX_INDEX));
             }
@@ -156,13 +163,18 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     xb.field("include_in_all", false);
                     xb.field("index", "no");
                 xb.endObject();
+                xb.startObject("type");
+                    xb.field("type", "string");
+                    xb.field("include_in_all", false);
+                    xb.field("index", "not_analyzed");
+                xb.endObject();
             xb.endObject();
         xb.endObject();
     }
 
     @Override
     public List<Document> getAllDocuments() {
-        SearchResponse response = client.prepareSearch("bundox")
+        SearchResponse response = client.prepareSearch(BUNDOX_INDEX)
                 .setTypes("document")
                 .execute()
                 .actionGet();
@@ -179,7 +191,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
 
     @Override
     public List<Document> findDocumentsByName(String name) {
-        SearchResponse response = client.prepareSearch("bundox")
+        SearchResponse response = client.prepareSearch(BUNDOX_INDEX)
                 .setTypes("document")
                 .setQuery(termQuery("name", name.toLowerCase()))
                 .execute()
@@ -199,7 +211,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
 
     @Override
     public List<Document> findDocumentsByNameAndVersion(String name, String version) {
-        SearchResponse response = client.prepareSearch("bundox")
+        SearchResponse response = client.prepareSearch(BUNDOX_INDEX)
                 .setTypes("document")
                 .setQuery(termQuery("name", name.toLowerCase()))
                 .setQuery(termQuery("version", version.toLowerCase()))
@@ -220,11 +232,10 @@ public class DocumentRepositoryImpl implements DocumentRepository {
 
     @Override
     public List<DocumentationItem> searchDocumentation(String searchTerm, List<Document> documents, int maxResults) {
-        SearchResponse response = client.prepareSearch("bundox")
+        SearchResponse response = client.prepareSearch(getDocumentationIndexNames(documents))
                 .setTypes("documentationItem")
                 .setQuery(boolQuery()
                             .must(wildcardQuery("subject", wildcardify(searchTerm)))
-                            .must(termQuery("document_id", documents.get(0).getId()))
                             .should(termQuery("subject", searchTerm).boost(10))
                             .should(prefixQuery("subject", searchTerm).boost(2))
                             .should(wildcardQuery("subject", wildcardify(searchTerm).substring(1))))
@@ -232,16 +243,25 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 .execute()
                 .actionGet();
         List<DocumentationItem> documentation = new ArrayList<>();
+        Map<String, Document> localDocumentIndex = createDocumentIndex(documents);
         for (SearchHit hit : response.getHits().getHits()) {
             Map<String, Object> result = hit.getSource();
             documentation.add(new DocumentationItem(
                     result.get("subject").toString(),
-                    documents.get(0),
+                    localDocumentIndex.get(result.get("document_id")),
                     result.get("path").toString(),
                     result.get("type").toString()
             ));
         }
         return documentation;
+    }
+
+    private Map<String, Document> createDocumentIndex(List<Document> documents) {
+        Map<String, Document> index = new HashMap<>();
+        for (Document doc : documents) {
+            index.put(doc.getId(), doc);
+        }
+        return index;
     }
 
     private String wildcardify(String term) {
@@ -254,7 +274,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 .forEach(document -> {
                     try {
 
-                        IndexResponse response = client.prepareIndex("bundox", "document", document.getId())
+                        IndexResponse response = client.prepareIndex(BUNDOX_INDEX, "document", document.getId())
                         .setSource(jsonBuilder()
                                 .startObject()
                                 .field("name", document.getName())
@@ -276,7 +296,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 .forEach(documentation -> {
                     try {
 
-                        IndexResponse response = client.prepareIndex("bundox", "documentationItem")
+                        IndexResponse response = client.prepareIndex(getDocumentationIndexName(documentation.getDocument()), "documentationItem")
                         .setSource(jsonBuilder()
                                 .startObject()
                                 .field("subject", documentation.getSubject())
@@ -296,7 +316,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
 
     @Override
     public void deleteDocument(Document document) {
-        DeleteByQueryResponse response = client.prepareDeleteByQuery("bundox")
+        DeleteByQueryResponse response = client.prepareDeleteByQuery(BUNDOX_INDEX)
                 .setTypes("document")
                 .setQuery(termQuery("name", document.getName().toLowerCase()))
                 .setQuery(termQuery("version", document.getVersion().toLowerCase()))
@@ -305,11 +325,22 @@ public class DocumentRepositoryImpl implements DocumentRepository {
     }
     @Override
     public void deleteDocumentation(Document document) {
-        DeleteByQueryResponse response = client.prepareDeleteByQuery("bundox")
-                .setTypes("documentationItem")
-                .setQuery(termQuery("document_id", document.getId().toLowerCase()))
-                .execute()
-                .actionGet();
+        client.prepareDelete().setIndex(getDocumentationIndexName(document))
+            .execute()
+            .actionGet();
+    }
+
+    private String[] getDocumentationIndexNames(List<Document> documents) {
+        List<String> docIndexList = documents.stream()
+            .map(doc -> getDocumentationIndexName(doc))
+            .collect(Collectors.toList());
+
+        String[] docIndices = new String[docIndexList.size()];
+        return docIndexList.toArray(docIndices);
+    }
+
+    private String getDocumentationIndexName(Document document) {
+        return BUNDOX_INDEX + "-" + document.getId().toLowerCase();
     }
 
     private String getSuffixes(String str) {
