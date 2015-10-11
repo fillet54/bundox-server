@@ -9,7 +9,7 @@ mimeTypes['application/bundox.api.v1+json'] = 'json';
 
 var bundoxApiBase = 'http://localhost:8080/bundox/api/';
 var documentEndPoint  = 'documents/';
-var allDocumentationSearchEndPoint = 'documents/documentation?searchTerm=';
+var allDocumentationSearchEndPoint = 'documents/documentation?maxResults=100&searchTerm=';
 
 export class BundoxService {
    static inject() { return [HttpClient]; }

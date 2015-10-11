@@ -24,7 +24,13 @@ body {
   text-align: center;
   display: inline-block;
   font-size: 72px;
-  margin-top: 50px;
+  margin-top: -20px;
+  color: #555;
+}
+
+.navbar-brand img {
+  width: 90px;
+  margin-top: -5px;
 }
 
 .page-host {
@@ -179,16 +185,16 @@ div.au-stagger {
 }
 
 .document:hover {
-  background: #666;
+  background: #7698D6;
   cursor: pointer;
 }
 
-.green {
-  background: #4DDB4D;
+.selected-result {
+  background: #B9C4D9;
 }
 
-.green:hover {
-  background: #4DDB4D;
+.selected-result:hover {
+  background: #7698D6;
 }
 
 .fill {
@@ -228,6 +234,7 @@ div.au-stagger {
   overflow-y: scroll;
 }
 .document-subject {
+  font-family: 'droid_sans_monoregular';
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -278,3 +285,46 @@ div.au-stagger {
 #ghostpaneRight {
   opacity: 0;
 }
+
+/* Documenation Type */
+.type-badge {
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 3px;
+  display: inline-block;
+  background-color: #19647E;
+  color: white;
+  font-size: small; 
+}
+
+.type-badge-class {
+  background-color: #28AFB0;
+}
+
+.type-badge-exception {
+  background-color: #AD2E24;
+}
+
+.type-badge-method {
+  background-color: #EE964B;
+}
+
+.type-badge-function {
+  background-color: #EE964B;
+}
+
+.type-badge-constructor {
+  background-color: #C75146;
+}
+
+.type-badge-enum {
+  background-color: #1F271B;
+}
+
+mark {
+  background-color: #F4D35E;
+  text-decoration: underline;
+}
+
