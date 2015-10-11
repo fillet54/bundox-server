@@ -10,6 +10,7 @@ public class Transformations {
         dto.setId(doc.getId());
         dto.setName(doc.getName());
         dto.setVersion(doc.getVersion());
+        dto.setFamily(doc.getFamily());
         return dto;
     }
     

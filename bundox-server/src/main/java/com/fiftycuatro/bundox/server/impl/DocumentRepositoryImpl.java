@@ -293,6 +293,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                                 .startObject()
                                 .field("name", document.getName())
                                 .field("version", document.getVersion())
+                                .field("family", document.getFamily())
                                 .endObject()
                         )
                         .execute()

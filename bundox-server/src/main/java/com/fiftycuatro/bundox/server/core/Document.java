@@ -25,6 +25,10 @@ public class Document {
         return version;
     }
 
+    public String getFamily() {
+        return family;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
