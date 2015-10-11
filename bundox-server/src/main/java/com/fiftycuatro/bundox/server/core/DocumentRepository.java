@@ -1,16 +1,15 @@
 package com.fiftycuatro.bundox.server.core;
 
 import java.util.List;
-import javax.inject.Singleton;
+import java.util.Optional;
 
-@Singleton
 public interface DocumentRepository {
     public List<Document> getAllDocuments();
     public void deleteDocument(Document document);
     
     public void deleteDocumentation(Document document);
     public List<Document> findDocumentsByName(String name);
-    public List<Document> findDocumentsByNameAndVersion(String name, String version);
+    public Optional<Document> findDocumentByNameAndVersion(String name, String version);
     
     public List<DocumentationItem> searchDocumentation(String searchTerm, List<Document> documents, int maxResults);
             

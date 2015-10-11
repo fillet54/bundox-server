@@ -70,8 +70,8 @@ public class DocumentationServiceImpl implements DocumentationService {
     }
 
     @Override
-    public void installDocumentFromDocSetArchive(Document document, String docSetArchivePath) {
-        documentInstaller.installDocumentFromDocSetArchive(document, docSetArchivePath);
+    public Document installDocumentFromDocSetArchive(String docName, String docVersion, String docSetArchivePath) {
+        return documentInstaller.installDocumentFromDocSetArchive(docName, docVersion, docSetArchivePath);
     }
 
     @Override

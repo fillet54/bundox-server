@@ -15,7 +15,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -82,13 +85,18 @@ public class DocumentRestfulService {
             @ApiParam(value = "Version of named documents", required = true) @PathParam("version") String version,
             @ApiParam(value = "Whether to re-index document", required = false, defaultValue="false") @DefaultValue("false") @QueryParam("reindex") boolean reindex) {
         
-        List<Document> documents = documentRepository.findDocumentsByNameAndVersion(name, version);
+        Optional<Document> document = documentRepository.findDocumentByNameAndVersion(name, version);
+        
+        List<Document> documents = new ArrayList<>();
+        if (document.isPresent()) {
+            documents.add(document.get());
+        }
         
         if (reindex) {
             documents.stream()
-                    .forEach(document -> documentationService.reindexDocument(document));
+                    .forEach(doc -> documentationService.reindexDocument(doc));
         }
-        
+
         return documents.stream()
                 .map(Transformations::convertDocumentToDTO)
                 .collect(Collectors.toList());
@@ -107,8 +115,7 @@ public class DocumentRestfulService {
         
         String archivePath = String.format("%s/%s_%s.tgz", uploadDirectory, name, version);
         writeToFile(uploadedInputStream, archivePath);
-        Document document = new Document(name, version);
-        documentationService.installDocumentFromDocSetArchive(document, archivePath);
+        Document document = documentationService.installDocumentFromDocSetArchive(name, version, archivePath);
         return Response.status(Response.Status.OK).entity(Transformations.convertDocumentToDTO(document)).build();
     }
     
@@ -120,9 +127,14 @@ public class DocumentRestfulService {
             @ApiParam(value = "Name of document", required = true) @PathParam("name") String name,
             @ApiParam(value = "Version of document", required = true) @PathParam("version") String version) {
         
-        Document document = new Document(name, version);
-        documentRepository.deleteDocument(document);
-        return Transformations.convertDocumentToDTO(document);
+        Optional<Document> document = documentRepository.findDocumentByNameAndVersion(name, version);
+
+        if (document.isPresent()) {
+            documentRepository.deleteDocument(document.get());
+            return Transformations.convertDocumentToDTO(document.get());
+        } else {
+            return null;
+        }
     }
     
     @GET
@@ -134,9 +146,13 @@ public class DocumentRestfulService {
             @ApiParam(value = "Version of named documents", required = true) @PathParam("version") String version,
             @ApiParam(value = "Max number of results", required = false, defaultValue = "50") @DefaultValue("50") @QueryParam("maxResults") int maxResults,
             @ApiParam(value = "Search Term for documentation", required = false) @DefaultValue("") @QueryParam("searchTerm") String searchTerm) {
-        List<Document> docs = documentRepository.findDocumentsByNameAndVersion(name, version);
+        Optional<Document> document = documentRepository.findDocumentByNameAndVersion(name, version);
 
-        return getDocumentation(docs, searchTerm, maxResults);
+        if (document.isPresent()) {
+            return getDocumentation(Arrays.asList(document.get()), searchTerm, maxResults);
+        } else {
+            return new ArrayList<DocumentationItemDTO>();
+        }
     }
 
     @GET

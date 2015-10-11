@@ -42,23 +42,22 @@ public class DocumentInstallerImplTest {
 
     @Test
     public void canImportFromDashFormatDocSet() {
-        Document document = new Document("SomeLanguage", "1.1.1");
-        canImportFromDocSet(document, TestUtilities.getSomeLanguageDocSetArchivePath());
+        canImportFromDocSet("SomeLanguage", "1.1.1", TestUtilities.getSomeLanguageDocSetArchivePath());
     }
 
     @Test
     public void canImportFromZFormatDocSet() {
-        Document document = new Document("SomeLanguageZ", "1.1.1");
-        canImportFromDocSet(document, TestUtilities.getSomeLanguageZDocSetArchivePath());
+        canImportFromDocSet("SomeLanguageZ", "1.1.1", TestUtilities.getSomeLanguageZDocSetArchivePath());
     }
 
-    private void canImportFromDocSet(Document document, String archivePath) {
+    private void canImportFromDocSet(String docName, String docVersion, String archivePath) {
         DocumentRepository docRepo = Mockito.mock(DocumentRepository.class);
         String dataDirectory = TestUtilities.getTempDirWithDeleteOnExit();
         DocumentInstallerImpl installer = new DocumentInstallerImpl(docRepo, dataDirectory);
 
-        installer.installDocumentFromDocSetArchive(document, archivePath);
+        installer.installDocumentFromDocSetArchive(docName, docVersion, archivePath);
 
+        Document document = new Document(docName, docVersion, "somelanguage");
         verify(docRepo).storeDocuments(argThat(isListOfDocument(document)));
         verify(docRepo).storeDocumentationItems(argThat(isListOfAllDocumentationItems(document)));
         assertDocSetWasExtractedToCorrectLocationOnDisk(document, dataDirectory);

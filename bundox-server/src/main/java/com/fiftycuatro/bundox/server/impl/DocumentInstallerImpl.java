@@ -38,23 +38,26 @@ public class DocumentInstallerImpl implements DocumentInstaller {
     }
 
     @Override
-    public void installDocumentFromDocSetArchive(Document document, String docSetArchivePath) {
+    public Document installDocumentFromDocSetArchive(String docName, String docVersion, String docSetArchivePath) {
+        String docSetDir = extractDocSetArchive(docName, docVersion, docSetArchivePath);
+        String docFamily = getFamilyFromDocSet(docSetDir); 
+        Document document = new Document(docName, docVersion, docFamily);
         documentRepository.storeDocuments(Arrays.asList(document));
-        String docSetDir = extractDocSetArchive(document, docSetArchivePath);
         (new SQLiteDocSetImporter(document, documentRepository, docSetDir))
                 .importDocSet();
+        return document;
     }
     
     @Override
     public void reindex(Document document) {
         documentRepository.deleteDocumentation(document);
-        String docSetDir = getDocSetDirectory(document);
+        String docSetDir = getDocSetDirectory(document.getName(), document.getVersion());
         (new SQLiteDocSetImporter(document, documentRepository, docSetDir))
                 .importDocSet();
     }
 
-    private String extractDocSetArchive(Document document, String docSetArchivePath) {
-        String destinationPath = getDestinationDirectory(document);
+    private String extractDocSetArchive(String docName, String docVersion, String docSetArchivePath) {
+        String destinationPath = getDestinationDirectory(docName, docVersion);
         try {
             
             File archive = new File(docSetArchivePath);
@@ -65,17 +68,21 @@ public class DocumentInstallerImpl implements DocumentInstaller {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return getDocSetDirectory(document);
+        return getDocSetDirectory(docName, docVersion);
     }
 
-    private String getDestinationDirectory(Document document) {
+    private String getDestinationDirectory(String docName, String docVersion) {
         String destinationPath = String.format("%s/%s/%s", dataDirectory,
-                document.getName(), document.getVersion());
+                docName, docVersion);
         return destinationPath;
     }
     
-    private String getDocSetDirectory(Document document) {
-        String destinationPath = getDestinationDirectory(document);
-        return String.format("%s/%s.docset", destinationPath, document.getName());
+    private String getDocSetDirectory(String docName, String docVersion) {
+        String destinationPath = getDestinationDirectory(docName, docVersion);
+        return String.format("%s/%s.docset", destinationPath, docName);
+    }
+
+    private String getFamilyFromDocSet(String docSetDirectory) {
+        return "somelanguage";
     }
 }
