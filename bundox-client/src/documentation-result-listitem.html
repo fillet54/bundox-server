@@ -1,5 +1,11 @@
 <template>
-   <div class="document ${isSelected ? 'green' : ''}" click.delegate="select()">
-      <p class="document-subject">[${entryType}] ${displayText}</p>
+   <require from='./highlight-search-value-converter'></require>
+   <require from='./type-badge-value-converter'></require>
+
+   <div class="document ${isSelected ? 'selected-result' : ''}" click.delegate="select()">
+      <p class="document-subject">
+        <span class="type-badge type-badge-${entryType.toLowerCase()}">${entryType | typeBadge}</span> 
+        <span innerHtml.bind="displayText | highlightSearch: searchTerm"></span>
+      </p>
 </div>
 </template>
