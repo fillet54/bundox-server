@@ -18,8 +18,11 @@ package com.fiftycuatro.bundox.server.impl;
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentInstaller;
 import com.fiftycuatro.bundox.server.core.DocumentationItem;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -61,15 +64,14 @@ public class DocumentRepositoryTest {
         DocumentRepositoryImpl repo = new DocumentRepositoryImpl();
         String dataDirectory = TestUtilities.getTempDirWithDeleteOnExit();
         DocumentInstaller installer = new DocumentInstallerImpl(repo, dataDirectory);
-        Document document = new Document("SomeLanguage", "1.0.0");
-
+        Document document = new Document("SomeLanguage", "1.0.0", "java");
         //installer.installDocumentFromDocSetArchive(document, TestUtilities.getSomeLanguageDocSetArchivePath());
 
         List<Document> allDocs = repo.getAllDocuments();
         List<Document> byName = repo.findDocumentsByName("SomeLanguage");
         List<Document> byNameNo = repo.findDocumentsByName("SomeLanguageZ");
-        List<Document> byNameVer = repo.findDocumentsByNameAndVersion("SomeLanguage", "1.0.0");
-        List<Document> byNameVerNo = repo.findDocumentsByNameAndVersion("SomeLanguage", "1.0.1");
+        Optional<Document> byNameVer = repo.findDocumentByNameAndVersion("SomeLanguage", "1.0.0");
+        Optional<Document> byNameVerNo = repo.findDocumentByNameAndVersion("SomeLanguage", "1.0.1");
         List<DocumentationItem> docItem = repo.searchDocumentation("somein", Arrays.asList(document), 10);
         List<DocumentationItem> docItem2 = repo.searchDocumentation("1some", Arrays.asList(document), 10);
         Assert.assertTrue(allDocs.contains(document));

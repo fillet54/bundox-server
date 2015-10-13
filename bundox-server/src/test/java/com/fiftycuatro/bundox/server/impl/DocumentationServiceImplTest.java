@@ -15,7 +15,6 @@
  */
 package com.fiftycuatro.bundox.server.impl;
 
-import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentInstaller;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
 import com.fiftycuatro.bundox.server.core.DocumentationService;
@@ -55,13 +54,12 @@ public class DocumentationServiceImplTest {
 
     @Test
     public void installsDocSetFromArchiveUsingDocumentInstaller() {
-        Document document = new Document("SomeLanguage", "1.0.0");
         DocumentRepository repository = Mockito.mock(DocumentRepository.class);
         DocumentInstaller installer = Mockito.mock(DocumentInstaller.class);
         DocumentationService service = new DocumentationServiceImpl(repository, installer);
         
-        service.installDocumentFromDocSetArchive(document, "some_archive_path.tgz");
+        service.installDocumentFromDocSetArchive("SomeLanguage", "1.0.0", "some_archive_path.tgz");
         
-        verify(installer).installDocumentFromDocSetArchive(document, "some_archive_path.tgz");
+        verify(installer).installDocumentFromDocSetArchive("SomeLanguage", "1.0.0", "some_archive_path.tgz");
     }
 }

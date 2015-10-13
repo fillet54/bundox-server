@@ -4,13 +4,15 @@ public class DocumentDTO {
     private String id;
     private String name;
     private String version;
+    private String family;
 
     public DocumentDTO() { }
     
-    public DocumentDTO(String id, String name, String version) {
+    public DocumentDTO(String id, String name, String version, String family) {
         this.id = id;
         this.name = name;
         this.version  = version;
+        this.family = family;
     }
     
     public String getId() {
@@ -35,5 +37,13 @@ public class DocumentDTO {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getFamily() {
+        return family;
+    }
+
+    public void setFamily(String family) {
+        this.family = family;
     }
 }

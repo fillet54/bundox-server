@@ -16,7 +16,7 @@ public class SortingDocumentRepositoryTest extends Specification {
     DocumentRepository backingRepo = Mock(DocumentRepository)
     DocumentRepository sortingRepo = new SortingDocumentRepository(backingRepo)
 
-    Document defaultDocument = new Document("Doc1", "1.1");
+    Document defaultDocument = new Document("Doc1", "1.1", "somelanguage");
     String defaultPath = "some/path/string";
     String defaultType = "Method";
 
@@ -65,15 +65,15 @@ public class SortingDocumentRepositoryTest extends Specification {
         documents == someDocuments
     }
 
-    def "delegates to backing document repository for findDocumentsByNameAndVersion"() { setup:
-        def someDocuments = [docWithNameAndVersion("Doc1", "1.1")]
+    def "delegates to backing document repository for findDocumentByNameAndVersion"() { setup:
+        def someDocument = docWithNameAndVersion("Doc1", "1.1")
 
         when:
-        def documents = sortingRepo.findDocumentsByNameAndVersion("Doc1", "1.1");
+        def document = sortingRepo.findDocumentByNameAndVersion("Doc1", "1.1");
 
         then:
-        1 * backingRepo.findDocumentsByNameAndVersion("Doc1", "1.1") >> someDocuments
-        documents == someDocuments
+        1 * backingRepo.findDocumentByNameAndVersion("Doc1", "1.1") >> Optional.ofNullable(someDocument)
+        document.get() == someDocument
     }
 
     def "delegates to backing document repository for storeDocuments"() {
@@ -179,7 +179,7 @@ public class SortingDocumentRepositoryTest extends Specification {
     }
 
     def docWithNameAndVersion(name, version) {
-        new Document(name, version);
+        new Document(name, version, "somelanguge");
     }
 
     def docItemWithSubject(subject) {

@@ -50,8 +50,8 @@ public class SortingDocumentRepository implements DocumentRepository {
         return backingRepo.findDocumentsByName(name);
     }
 
-    public List<Document> findDocumentsByNameAndVersion(String name, String version) {
-        return backingRepo.findDocumentsByNameAndVersion(name, version);
+    public Optional<Document> findDocumentByNameAndVersion(String name, String version) {
+        return backingRepo.findDocumentByNameAndVersion(name, version);
     }
     
     public List<DocumentationItem> searchDocumentation(String searchTerm, List<Document> documents, int maxResults) {

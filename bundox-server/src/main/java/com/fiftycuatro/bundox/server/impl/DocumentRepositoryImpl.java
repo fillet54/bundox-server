@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -183,7 +184,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
             Map<String, Object> result = hit.getSource();
             documents.add(new Document(
                     result.get("name").toString(),
-                    result.get("version").toString()
+                    result.get("version").toString(),
+                    result.get("family").toString()
             ));
         }
         return documents;
@@ -197,20 +199,20 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 .execute()
                 .actionGet();
         List<Document> documents = new ArrayList<>();
-        long count = response.getHits().getTotalHits();
         for (SearchHit hit : response.getHits().getHits()) {
 
             Map<String, Object> result = hit.getSource();
             documents.add(new Document(
                     result.get("name").toString(),
-                    result.get("version").toString()
+                    result.get("version").toString(),
+                    result.get("family").toString()
             ));
         }
         return documents;
     }
 
     @Override
-    public List<Document> findDocumentsByNameAndVersion(String name, String version) {
+    public Optional<Document> findDocumentByNameAndVersion(String name, String version) {
         SearchResponse response = client.prepareSearch(BUNDOX_INDEX)
                 .setTypes("document")
                 .setQuery(termQuery("name", name.toLowerCase()))
@@ -224,10 +226,22 @@ public class DocumentRepositoryImpl implements DocumentRepository {
             Map<String, Object> result = hit.getSource();
             documents.add(new Document(
                     result.get("name").toString(),
-                    result.get("version").toString()
+                    result.get("version").toString(),
+                    result.get("family").toString()
             ));
         }
-        return documents;
+        
+        if (documents.isEmpty()) {
+            return Optional.ofNullable(null);
+        } else {
+            if (documents.size() > 1) {
+                log.warning("Search for document by name and version produced two results");
+            }
+            for (Document document : documents) {
+                log.fine("found document: " + document);
+            }
+            return Optional.ofNullable(documents.get(0));
+        } 
     }
 
     @Override
@@ -279,6 +293,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                                 .startObject()
                                 .field("name", document.getName())
                                 .field("version", document.getVersion())
+                                .field("family", document.getFamily())
                                 .endObject()
                         )
                         .execute()
