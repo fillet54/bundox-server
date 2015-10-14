@@ -22,13 +22,24 @@ export class BundoxService {
 
    retrieveAllDocuments() {
      return this.http.get(bundoxApiBase + documentEndPoint).then(response => {
-        return response.content.map(d => new Document(d.name, d.version));
+        return response.content.map(d => new Document(d.id, d.name, d.version, d.family));
      });
    }
 
    searchAllDocumentation(searchTerm) {
-     return this.http.get(bundoxApiBase + allDocumentationSearchEndPoint + searchTerm).then(response => {
-           return response.content.map(r => new DocumentationResult(r.subject, r.path, r.type));
+     return this.retrieveAllDocuments().then ( documents => {
+        var docIndexById = this.indexBy(documents, "id");
+        log.info(docIndexById);
+        return this.http.get(bundoxApiBase + allDocumentationSearchEndPoint + searchTerm).then(response => {
+           return response.content.map(r => new DocumentationResult(r.subject, r.path, r.type, docIndexById[r.documentId]));
+        });
      });
+   }
+
+   indexBy(list, field) {
+      var index = {}
+      log.info(list);
+      list.forEach (o => index[o[field]] = o);
+      return index;
    }
 }

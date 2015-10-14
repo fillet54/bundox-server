@@ -1,5 +1,5 @@
 <template>
    <div class="document ${isSelected ? 'green' : ''}" click.delegate="select()">
-   <p>${displayText}</p>
+      <img class="family" src="/img/family/${family ? family : 'unknown'}.png"></img><span>${displayText}</span>
 </div>
 </template>
