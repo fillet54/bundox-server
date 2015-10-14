@@ -1,7 +1,6 @@
 
 export class HighlightSearchValueConverter {
   toView(value, search) {
-    log.info(this.highlight(value, search));
     return this.highlight(value, search);
   }
 

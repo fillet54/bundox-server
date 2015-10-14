@@ -189,6 +189,17 @@ div.au-stagger {
   cursor: pointer;
 }
 
+img.family {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #AAA;
+  border-radius: 2px;
+  margin: 2px 5px;
+}
+
 .selected-result {
   background: #B9C4D9;
 }
@@ -230,11 +241,11 @@ div.au-stagger {
 }
 
 .search-pane {
+  font-family: 'droid_sans_monoregular';
   height: 100%;
   overflow-y: scroll;
 }
 .document-subject {
-  font-family: 'droid_sans_monoregular';
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -288,15 +299,18 @@ div.au-stagger {
 
 /* Documenation Type */
 .type-badge {
-  width: 18px;
-  height: 18px;
-  line-height: 18px;
+  width: 20px;
+  height: 20px;
+  line-height: 19px;
   text-align: center;
   border-radius: 3px;
   display: inline-block;
   background-color: #19647E;
   color: white;
   font-size: small; 
+  border-style: solid;
+  border-width: 1px;
+  border-color: white;
 }
 
 .type-badge-class {
@@ -327,4 +341,3 @@ mark {
   background-color: #F4D35E;
   text-decoration: underline;
 }
-

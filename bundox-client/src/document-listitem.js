@@ -5,6 +5,7 @@ export class DocumentListItem {
    static inject() { return [SelectionModel, ObserverLocator]; }
    constructor(selectionModel, observerLocator) {
       this.displayText = "";
+      this.family = 'unknown';
       this.isSelected = false;
       this.selectionModel = selectionModel;
       this.observerLocator = observerLocator;
@@ -12,6 +13,7 @@ export class DocumentListItem {
 
    activate(model) {
       this.displayText = `${model.name} ${model.version}`;
+      this.family = model.family;
       this.observeSelected();
    }
 

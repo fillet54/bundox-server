@@ -22,6 +22,7 @@ export class DocumentationResultListItem {
       this.entryType = model.entryType ? model.entryType : "unknown";
       this.observeSelected();
       this.searchTerm = this.searchPane.searchTerm;
+      this.family = model.document ? model.document.family : null;
    }
 
    select() {

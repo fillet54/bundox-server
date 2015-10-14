@@ -4,6 +4,7 @@
 
    <div class="document ${isSelected ? 'selected-result' : ''}" click.delegate="select()">
       <p class="document-subject">
+        <img class="family" src="/img/family/${family ? family : 'unknown'}.png"></img>
         <span class="type-badge type-badge-${entryType.toLowerCase()}">${entryType | typeBadge}</span> 
         <span innerHtml.bind="displayText | highlightSearch: searchTerm"></span>
       </p>
