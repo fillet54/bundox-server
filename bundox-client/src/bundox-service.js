@@ -36,6 +36,16 @@ export class BundoxService {
      });
    }
 
+   searchDocumentation(searchTerm, document) {
+     return this.retrieveAllDocuments().then ( documents => {
+        var endpoint = `${bundoxApiBase}documents/${document.name}/${document.version}/documentation?maxResults=100&searchTerm=${searchTerm}`;
+        var docIndexById = this.indexBy(documents, "id");
+        return this.http.get(endpoint).then(response => {
+           return response.content.map(r => new DocumentationResult(r.subject, r.path, r.type, docIndexById[r.documentId]));
+        });
+     });
+   }
+
    indexBy(list, field) {
       var index = {}
       log.info(list);

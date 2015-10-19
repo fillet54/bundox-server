@@ -1,5 +1,7 @@
 <template>
-   <div class="document ${isSelected ? 'green' : ''}" click.delegate="select()">
-      <img class="family" src="/img/family/${family ? family : 'unknown'}.png"></img><span>${displayText}</span>
-</div>
+   <div class="document ${isSelected ? 'selected-result' : ''}" click.delegate="select()">
+      <img class="family" src="/img/family/${family ? family : 'unknown'}.png"></img>
+      ${displayText}
+      <i class="fa fa-search" click.delegate="addFilter()"></i>
+   </div>
 </template>

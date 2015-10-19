@@ -1,29 +1,30 @@
 import {SelectionModel} from './selection-model';
-import {ObserverLocator} from 'aurelia-framework';
+import {SearchPane} from './search-pane';
 
 export class DocumentListItem {
-   static inject() { return [SelectionModel, ObserverLocator]; }
-   constructor(selectionModel, observerLocator) {
+   static inject() { return [SelectionModel, SearchPane]; }
+   constructor(selectionModel, searchPane) {
       this.displayText = "";
       this.family = 'unknown';
-      this.isSelected = false;
       this.selectionModel = selectionModel;
-      this.observerLocator = observerLocator;
+      this.searchPane = searchPane;
    }
 
    activate(model) {
+      this.model = model;
       this.displayText = `${model.name} ${model.version}`;
       this.family = model.family;
-      this.observeSelected();
+   }
+
+   get isSelected() {
+      return this.selectionModel.selectedItem === this.model;
    }
 
    select() {
-      this.selectionModel.select(this);
+      this.selectionModel.select(this.model);
    }
 
-   observeSelected() {
-      this.observerLocator
-         .getObserver(this.selectionModel, 'selectedItem')
-         .subscribe(item => this.isSelected = this == item);
+   addFilter() {
+      this.searchPane.addFilter(this.model);
    }
 }

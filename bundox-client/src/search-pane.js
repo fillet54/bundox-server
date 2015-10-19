@@ -1,15 +1,29 @@
 import {BundoxService} from './bundox-service';
 import {ObserverLocator} from 'aurelia-framework';
 import rx from 'rx'; 
+import {SelectionModel} from './selection-model';
 
 export class SearchPane {
-  static inject() { return [BundoxService, ObserverLocator]; }
-  constructor(bundoxService, locator) {
+  static inject() { return [BundoxService, ObserverLocator, SelectionModel]; }
+  constructor(bundoxService, locator, selectionModel) {
      this.items = [];
      this.searchTerm = '';
      
      this.bundoxApi = bundoxService;
      this.locator = locator;
+     this.selection = selectionModel;
+     this.filter = null;
+     this.isFiltered = false;
+  }
+
+  addFilter(value) {
+    this.filter = value;
+    this.isFiltered = true;
+  }
+
+  clearFilter() {
+    this.isFiltered = false;
+    this.searchTerm = "";
   }
 
   activate(){
@@ -27,14 +41,17 @@ export class SearchPane {
         this.items = docs;
      });
   }
-
+  
   createSearcher() {
      var api = this.bundoxApi;
      return term => {
         if (term == "")
            return api.retrieveAllDocuments()
-        else
+        else if (this.isFiltered) {
+           return api.searchDocumentation(term, this.filter);
+        } else {
            return api.searchAllDocumentation(term);
+        }
      }
   }
 }

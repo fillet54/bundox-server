@@ -2,7 +2,7 @@
    <require from='./highlight-search-value-converter'></require>
    <require from='./type-badge-value-converter'></require>
 
-   <div class="document ${isSelected ? 'selected-result' : ''}" click.delegate="select()">
+   <div class="${isSelected ? 'selected-result' : ''}" click.delegate="select()">
       <p class="document-subject">
         <img class="family" src="/img/family/${family ? family : 'unknown'}.png"></img>
         <span class="type-badge type-badge-${entryType.toLowerCase()}">${entryType | typeBadge}</span> 

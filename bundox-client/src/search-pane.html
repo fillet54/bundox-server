@@ -1,6 +1,12 @@
 <template>
-  <div class="search-pane">
+<div class="search-pane">
+  <div class="search-bar">
+    <div class="search-filter" if.bind="isFiltered">
+      <i class="fa fa-times-circle" click.delegate="clearFilter()"></i>
+      <img class="family" src="/img/family/${filter.family ? filter.family : 'unknown'}.png"></img>
+    </div>
     <input type="input" value.bind="searchTerm" placeholder="search here"/>
+  </div>
     <ul class="searchResults">
       <li repeat.for="item of items">
       <compose model.bind="item"
