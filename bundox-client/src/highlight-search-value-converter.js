@@ -8,16 +8,18 @@ export class HighlightSearchValueConverter {
     var currentPos = 0;
     var lastMatch = -1;
     var result = "";
+    search = search.toLowerCase();
+    var valueLower = value.toLowerCase();
     for(var i = 0; i < search.length; i = i + 1) {
       var c = search.charAt(i);
-      var match = value.indexOf(c, currentPos);
+      var match = valueLower.indexOf(c, currentPos);
       if (match == -1) {
         break;
       } else if (lastMatch + 1 == match) {
         if (lastMatch == -1) {
            result = "<mark>";
         }
-        result = result + c;
+        result = result + value.charAt(match);
         lastMatch = match;
         currentPos = currentPos + 1;
       } else {
@@ -25,7 +27,7 @@ export class HighlightSearchValueConverter {
           result = result + "</mark>";
         }
         result = result + value.substring(lastMatch+1, match);
-        result = result + "<mark>" + c;
+        result = result + "<mark>" + value.charAt(match);
         lastMatch = match;
         currentPos = match + 1;
       }
