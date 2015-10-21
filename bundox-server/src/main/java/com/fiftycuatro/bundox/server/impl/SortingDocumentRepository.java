@@ -57,17 +57,16 @@ public class SortingDocumentRepository implements DocumentRepository {
     public List<DocumentationItem> searchDocumentation(String searchTerm, List<Document> documents, int maxResults) {
         List<DocumentationItem> unsorted = backingRepo.searchDocumentation(searchTerm, documents, maxResults);
         return unsorted.stream()
-               .sorted((e1, e2) -> compareMultiple(searchTerm, e1, e2))
+               .sorted((e1, e2) -> compareMultiple(searchTerm.toLowerCase(), e1, e2))
                .collect(Collectors.toList());
-
     }
 
     private int compareMultiple(String search, DocumentationItem docItem1, DocumentationItem docItem2) {
         List<TriFunction<String,DocumentationItem,DocumentationItem,Integer>> comparers = new ArrayList<>();
-        comparers.add((s,d1,d2) -> compareByStartLocation(s, d1.getSubject(), d2.getSubject()));
-        comparers.add((s,d1,d2) -> compareByNumOfSplits(s, d1.getSubject(), d2.getSubject()));
-        comparers.add((s,d1,d2) -> compareByLongestSegment(s, d1.getSubject(), d2.getSubject()));
-        comparers.add((s,d1,d2) -> compareByLength(s, d1.getSubject(), d2.getSubject()));
+        comparers.add((s,d1,d2) -> compareByStartLocation(s, d1.getSubject().toLowerCase(), d2.getSubject().toLowerCase()));
+        comparers.add((s,d1,d2) -> compareByNumOfSplits(s, d1.getSubject().toLowerCase(), d2.getSubject().toLowerCase()));
+        comparers.add((s,d1,d2) -> compareByLongestSegment(s, d1.getSubject().toLowerCase(), d2.getSubject().toLowerCase()));
+        comparers.add((s,d1,d2) -> compareByLength(s, d1.getSubject().toLowerCase(), d2.getSubject().toLowerCase()));
         comparers.add((s,d1,d2) -> compareByType(s, d1.getType(), d2.getType()));
 
         int compare = 0;

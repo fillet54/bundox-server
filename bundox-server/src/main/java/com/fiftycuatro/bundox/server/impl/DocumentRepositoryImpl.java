@@ -105,6 +105,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 xb.startObject("analyzer");
                     addNGramAnalyzer(xb);
                     addWhitespaceAnalyzer(xb);
+                    addLowercaseAnalyzer(xb);
                 xb.endObject();
             xb.endObject();
         xb.endObject();
@@ -126,6 +127,14 @@ public class DocumentRepositoryImpl implements DocumentRepository {
             xb.field("type", "custom");
             xb.field("tokenizer", "whitespace");
             xb.field("filter", "lowercase", "asciifolding", "nGram_filter");
+        xb.endObject();       
+    }
+
+    private void addLowercaseAnalyzer(XContentBuilder xb) throws IOException {
+        xb.startObject("lowercase_analyzer");
+            xb.field("type", "custom");
+            xb.field("tokenizer", "keyword");
+            xb.field("filter", "lowercase");
         xb.endObject();       
     }
     
@@ -152,7 +161,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
             xb.startObject("properties");
                 xb.startObject("subject");
                     xb.field("type", "string");
-                    xb.field("index", "not_analyzed");
+                    xb.field("index_analyzer", "lowercase_analyzer");
                 xb.endObject();
                 xb.startObject("document_id");
                     xb.field("type", "string");
@@ -246,6 +255,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
 
     @Override
     public List<DocumentationItem> searchDocumentation(String searchTerm, List<Document> documents, int maxResults) {
+        searchTerm = searchTerm.toLowerCase();
         SearchResponse response = client.prepareSearch(getDocumentationIndexNames(documents))
                 .setTypes("documentationItem")
                 .setQuery(boolQuery()

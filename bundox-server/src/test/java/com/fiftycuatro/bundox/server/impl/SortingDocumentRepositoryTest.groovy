@@ -133,9 +133,9 @@ public class SortingDocumentRepositoryTest extends Specification {
     def "sorts searchDocumenationItems by longest matching segment "() {
         setup:
         def unsortedDocItems = [
-            docItemWithSubject("FileIn_putStream"),
-            docItemWithSubject("FileInputStream"),
-            docItemWithSubject("FileInpu_tStream")
+            docItemWithSubject("In_putStream"),
+            docItemWithSubject("InputStream"),
+            docItemWithSubject("Inpu_tStream")
         ]
 
         when:
@@ -176,6 +176,22 @@ public class SortingDocumentRepositoryTest extends Specification {
         then:
         1 * backingRepo.searchDocumentation("FileInput", [defaultDocument], 10) >> unsortedDocItems
         sortedDocItems == [unsortedDocItems[1], unsortedDocItems[0], unsortedDocItems[2]]
+    }
+
+    def "sorts searchDocumenationItems does a lowercase compare"() {
+        setup:
+        def unsortedDocItems = [
+            docItemWithSubject("fileInputStream"),
+            docItemWithSubject("__FileinputStream"),
+            docItemWithSubject("_FileInputStream")
+        ]
+
+        when:
+        def sortedDocItems = sortingRepo.searchDocumentation("FileInputStream", [defaultDocument], 10);
+
+        then:
+        1 * backingRepo.searchDocumentation("FileInputStream", [defaultDocument], 10) >> unsortedDocItems
+        sortedDocItems == [unsortedDocItems[0], unsortedDocItems[2], unsortedDocItems[1]]
     }
 
     def docWithNameAndVersion(name, version) {
