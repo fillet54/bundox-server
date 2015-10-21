@@ -231,6 +231,25 @@ img.family {
 
 .documentation-pane {
   height: 100%;
+  padding-bottom: 30px;
+  margin: 0 auto -30px;
+}
+
+.documentation-pane-footer {
+  height: 30px;
+  border-style: solid;
+  border-color: #e7e7e7;
+  border-width: 1px;
+  padding: 2px;
+  text-align: center;
+  background-color: #f8f8f8;
+  color: #aaa;
+  font-weight: 200;
+}
+
+.documentation-pane-footer a {
+  color: #aaa;
+  text-decoration: underline;
 }
 
 .document span {
