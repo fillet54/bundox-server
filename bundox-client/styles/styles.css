@@ -233,6 +233,17 @@ img.family {
   height: 100%;
 }
 
+.document span {
+  width: 100%;
+}
+
+.document i {
+  float: right;
+  color: #555;
+  margin: 5px 5px 0px 0px;
+}
+
+
 .documentation-frame {
   width: 100%;
   height: 100%;
@@ -245,6 +256,33 @@ img.family {
   height: 100%;
   overflow-y: scroll;
 }
+
+.search-bar {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #AAA;
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  display: flex;
+}
+
+.search-bar input {
+  width: 100%;
+}
+
+.search-bar i {
+  color: #B9C4D9;
+}
+
+.search-bar img {
+  margin: 0px 5px 0px 0px;
+}
+
+.search-filter {
+  width: 55px;
+}
+
 .document-subject {
   white-space: nowrap;
   overflow: hidden;
