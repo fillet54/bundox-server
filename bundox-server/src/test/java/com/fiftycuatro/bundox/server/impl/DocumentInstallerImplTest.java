@@ -49,6 +49,11 @@ public class DocumentInstallerImplTest {
     public void canImportFromZFormatDocSet() {
         canImportFromDocSet("SomeLanguageZ", "1.1.1", "platform1", TestUtilities.getSomeLanguageZDocSetArchivePath());
     }
+    
+    @Test
+    public void canImportFromDocSetWithNameNotMatchingArchiveDocsetName() {
+        canImportFromDocSet("DifferentLanguage", "1.1.1", "platform1", TestUtilities.getSomeLanguageDocSetArchivePath());
+    }
 
     private void canImportFromDocSet(String docName, String docVersion, String docFamily, String archivePath) {
         DocumentRepository docRepo = Mockito.mock(DocumentRepository.class);
