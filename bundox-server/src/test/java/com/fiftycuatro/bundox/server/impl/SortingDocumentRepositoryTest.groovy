@@ -16,7 +16,7 @@ public class SortingDocumentRepositoryTest extends Specification {
     DocumentRepository backingRepo = Mock(DocumentRepository)
     DocumentRepository sortingRepo = new SortingDocumentRepository(backingRepo)
 
-    Document defaultDocument = new Document("Doc1", "1.1", "somelanguage");
+    Document defaultDocument = new Document("Doc1", "1.1", "somelanguage", "index.html");
     String defaultPath = "some/path/string";
     String defaultType = "Method";
 
@@ -195,7 +195,7 @@ public class SortingDocumentRepositoryTest extends Specification {
     }
 
     def docWithNameAndVersion(name, version) {
-        new Document(name, version, "somelanguge");
+        new Document(name, version, "somelanguge", "index.html");
     }
 
     def docItemWithSubject(subject) {

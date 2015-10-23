@@ -42,27 +42,29 @@ public class DocumentInstallerImplTest {
 
     @Test
     public void canImportFromDashFormatDocSet() {
-        canImportFromDocSet("SomeLanguage", "1.1.1", "platform1", TestUtilities.getSomeLanguageDocSetArchivePath());
+        Document document = new Document("SomeLanguage", "1.1.1", "platform1", "index.html");
+        canImportFromDocSet(document, TestUtilities.getSomeLanguageDocSetArchivePath());
     }
 
     @Test
     public void canImportFromZFormatDocSet() {
-        canImportFromDocSet("SomeLanguageZ", "1.1.1", "platform1", TestUtilities.getSomeLanguageZDocSetArchivePath());
+        Document document = new Document("SomeLanguageZ", "1.1.1", "platform1", "index.html");
+        canImportFromDocSet(document, TestUtilities.getSomeLanguageZDocSetArchivePath());
     }
     
     @Test
     public void canImportFromDocSetWithNameNotMatchingArchiveDocsetName() {
-        canImportFromDocSet("DifferentLanguage", "1.1.1", "platform1", TestUtilities.getSomeLanguageDocSetArchivePath());
+        Document document = new Document("SomeLanguage", "1.1.1", "platform1", "index.html");
+        canImportFromDocSet(document, TestUtilities.getSomeLanguageDocSetArchivePath());
     }
 
-    private void canImportFromDocSet(String docName, String docVersion, String docFamily, String archivePath) {
+    private void canImportFromDocSet(Document document, String archivePath) {
         DocumentRepository docRepo = Mockito.mock(DocumentRepository.class);
         String dataDirectory = TestUtilities.getTempDirWithDeleteOnExit();
         DocumentInstallerImpl installer = new DocumentInstallerImpl(docRepo, dataDirectory);
 
-        installer.installDocumentFromDocSetArchive(docName, docVersion, archivePath);
+        installer.installDocumentFromDocSetArchive(document.getName(), document.getVersion(), archivePath);
 
-        Document document = new Document(docName, docVersion, docFamily);
         verify(docRepo).storeDocuments(argThat(isListOfDocument(document)));
         verify(docRepo).storeDocumentationItems(argThat(isListOfAllDocumentationItems(document)));
         assertDocSetWasExtractedToCorrectLocationOnDisk(document, dataDirectory);

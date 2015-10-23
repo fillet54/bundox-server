@@ -5,14 +5,16 @@ public class DocumentDTO {
     private String name;
     private String version;
     private String family;
+    private String indexPath;
 
     public DocumentDTO() { }
     
-    public DocumentDTO(String id, String name, String version, String family) {
+    public DocumentDTO(String id, String name, String version, String family, String indexPath) {
         this.id = id;
         this.name = name;
         this.version  = version;
         this.family = family;
+        this.indexPath = indexPath;
     }
     
     public String getId() {
@@ -45,5 +47,13 @@ public class DocumentDTO {
 
     public void setFamily(String family) {
         this.family = family;
+    }
+
+    public String getIndexPath() {
+        return this.indexPath;
+    }
+
+    public void setIndexPath(String indexPath) {
+        this.indexPath = indexPath;
     }
 }

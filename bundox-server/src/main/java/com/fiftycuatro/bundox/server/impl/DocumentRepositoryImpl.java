@@ -194,7 +194,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
             documents.add(new Document(
                     result.get("name").toString(),
                     result.get("version").toString(),
-                    result.get("family").toString()
+                    result.get("family").toString(),
+                    result.get("index_path").toString()
             ));
         }
         return documents;
@@ -214,7 +215,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
             documents.add(new Document(
                     result.get("name").toString(),
                     result.get("version").toString(),
-                    result.get("family").toString()
+                    result.get("family").toString(),
+                    result.get("index_path").toString()
             ));
         }
         return documents;
@@ -236,7 +238,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
             documents.add(new Document(
                     result.get("name").toString(),
                     result.get("version").toString(),
-                    result.get("family").toString()
+                    result.get("family").toString(),
+                    result.get("index_path").toString()
             ));
         }
         
@@ -304,6 +307,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                                 .field("name", document.getName())
                                 .field("version", document.getVersion())
                                 .field("family", document.getFamily())
+                                .field("index_path", document.getIndexPath())
                                 .endObject()
                         )
                         .execute()

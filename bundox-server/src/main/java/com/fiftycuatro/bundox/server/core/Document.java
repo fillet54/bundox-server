@@ -6,11 +6,13 @@ public class Document {
     private String name;
     private String version;
     private String family;
+    private String indexPath;
     
-    public Document(String name, String version, String family) {
+    public Document(String name, String version, String family, String indexPath) {
         this.name = name;
         this.version = version;
         this.family = family;
+        this.indexPath = indexPath;
     }
     
     public String getId() {
@@ -29,12 +31,17 @@ public class Document {
         return family;
     }
 
+    public String getIndexPath() {
+        return indexPath;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 53 * hash + Objects.hashCode(this.name);
         hash = 53 * hash + Objects.hashCode(this.version);
         hash = 53 * hash + Objects.hashCode(this.family);
+        hash = 53 * hash + Objects.hashCode(this.indexPath);
         return hash;
     }
 
@@ -54,6 +61,9 @@ public class Document {
             return false;
         }
         if (!Objects.equals(this.family, other.family)) {
+            return false;
+        }
+        if (!Objects.equals(this.indexPath, other.indexPath)) {
             return false;
         }
         return true;
