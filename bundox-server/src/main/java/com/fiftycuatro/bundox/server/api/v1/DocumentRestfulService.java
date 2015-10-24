@@ -60,7 +60,7 @@ public class DocumentRestfulService {
     @ApiOperation(value = "Get all documents", notes = "All documents that are avaliable",
             response = DocumentDTO.class, responseContainer = "List")
     public List<DocumentDTO> documentIndex() {
-        return documentRepository.getAllDocuments().stream()
+        return documentationService.allDocuments().stream()
                 .map(Transformations::convertDocumentToDTO)
                 .collect(Collectors.toList());
     }
@@ -71,7 +71,7 @@ public class DocumentRestfulService {
             response = DocumentDTO.class, responseContainer = "List")
     public List<DocumentDTO> documentsByName(
             @ApiParam(value = "Name of documents to fetch", required = true) @PathParam("name") String name) {
-        return documentRepository.findDocumentsByName(name).stream()
+        return documentationService.documentsByName(name).stream()
                 .map(Transformations::convertDocumentToDTO)
                 .collect(Collectors.toList());
     }
@@ -82,22 +82,8 @@ public class DocumentRestfulService {
             response = DocumentDTO.class, responseContainer = "List")
     public List<DocumentDTO> documentByNameAndVersion(
             @ApiParam(value = "Name of documents to fetch", required = true) @PathParam("name") String name,
-            @ApiParam(value = "Version of named documents", required = true) @PathParam("version") String version,
-            @ApiParam(value = "Whether to re-index document", required = false, defaultValue="false") @DefaultValue("false") @QueryParam("reindex") boolean reindex) {
-        
-        Optional<Document> document = documentRepository.findDocumentByNameAndVersion(name, version);
-        
-        List<Document> documents = new ArrayList<>();
-        if (document.isPresent()) {
-            documents.add(document.get());
-        }
-        
-        if (reindex) {
-            documents.stream()
-                    .forEach(doc -> documentationService.reindexDocument(doc));
-        }
-
-        return documents.stream()
+            @ApiParam(value = "Version of named documents", required = true) @PathParam("version") String version) {
+        return documentationService.documentsByNameAndVersion(name, version).stream()
                 .map(Transformations::convertDocumentToDTO)
                 .collect(Collectors.toList());
     }
@@ -123,18 +109,19 @@ public class DocumentRestfulService {
     @Path("/{name}/{version}")
     @ApiOperation(value = "Documents by name and version", notes = "Documents always have a name and a version",
             response = DocumentDTO.class)
-    public DocumentDTO deleteDocument(
+    public List<DocumentDTO> deleteDocument(
             @ApiParam(value = "Name of document", required = true) @PathParam("name") String name,
             @ApiParam(value = "Version of document", required = true) @PathParam("version") String version) {
         
-        Optional<Document> document = documentRepository.findDocumentByNameAndVersion(name, version);
+        List<Document> documents = documentationService.documentsByNameAndVersion(name, version);
 
-        if (document.isPresent()) {
-            documentRepository.deleteDocument(document.get());
-            return Transformations.convertDocumentToDTO(document.get());
-        } else {
-            return null;
+        for (Document document : documents) {
+            documentRepository.deleteDocument(document);
         }
+
+        return documents.stream()
+            .map(Transformations::convertDocumentToDTO)
+            .collect(Collectors.toList());
     }
     
     @GET
@@ -146,13 +133,8 @@ public class DocumentRestfulService {
             @ApiParam(value = "Version of named documents", required = true) @PathParam("version") String version,
             @ApiParam(value = "Max number of results", required = false, defaultValue = "50") @DefaultValue("50") @QueryParam("maxResults") int maxResults,
             @ApiParam(value = "Search Term for documentation", required = false) @DefaultValue("") @QueryParam("searchTerm") String searchTerm) {
-        Optional<Document> document = documentRepository.findDocumentByNameAndVersion(name, version);
-
-        if (document.isPresent()) {
-            return getDocumentation(Arrays.asList(document.get()), searchTerm, maxResults);
-        } else {
-            return new ArrayList<DocumentationItemDTO>();
-        }
+        List<Document> documents = documentationService.documentsByNameAndVersion(name, version);
+        return getDocumentation(documents, searchTerm, maxResults);
     }
 
     @GET

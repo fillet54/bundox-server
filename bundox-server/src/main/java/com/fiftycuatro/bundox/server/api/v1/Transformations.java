@@ -11,6 +11,7 @@ public class Transformations {
         dto.setName(doc.getName());
         dto.setVersion(doc.getVersion());
         dto.setFamily(doc.getFamily());
+        dto.setIndexPath(doc.getIndexPath());
         return dto;
     }
     

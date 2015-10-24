@@ -50,6 +50,36 @@ public class DocumentationServiceImpl implements DocumentationService {
     }
 
     @Override
+    public List<Document> allDocuments() {
+        return rewriteIndexPaths(
+                documentRepository.getAllDocuments());
+    }
+
+    @Override
+    public List<Document> documentsByName(String name) {
+        return rewriteIndexPaths(
+                documentRepository.findDocumentsByName(name));
+    }
+
+    @Override
+    public List<Document> documentsByNameAndVersion(String name, String version) {
+        return rewriteIndexPaths(
+                documentRepository.findDocumentsByNameAndVersion(name, version));
+    }
+
+    public List<Document> rewriteIndexPaths(List<Document> documents) {
+        return documents.stream()
+            .map(d -> rewriteDocumentIndexPath(d))
+            .collect(Collectors.toList());
+    }
+    
+    private Document rewriteDocumentIndexPath(Document original) {
+        String rewritePath = String.format("/%s/%s/%s/%s/%s", 
+                rootPath, staticPath, original.getName(), original.getVersion(), original.getIndexPath());
+        return new Document(original.getName(), original.getVersion(), original.getFamily(), rewritePath);
+    }
+
+    @Override
     public List<DocumentationItem> searchDocumentation(String searchTerm, List<Document> documents, int maxResults) {
         return documentRepository.searchDocumentation(searchTerm, documents, maxResults).stream()
                 .map(d -> rewriteDocumentationPath(d))
