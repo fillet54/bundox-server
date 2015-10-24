@@ -223,7 +223,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
     }
 
     @Override
-    public Optional<Document> findDocumentByNameAndVersion(String name, String version) {
+    public List<Document> findDocumentsByNameAndVersion(String name, String version) {
         SearchResponse response = client.prepareSearch(BUNDOX_INDEX)
                 .setTypes("document")
                 .setQuery(termQuery("name", name.toLowerCase()))
@@ -242,18 +242,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     result.get("index_path").toString()
             ));
         }
-        
-        if (documents.isEmpty()) {
-            return Optional.ofNullable(null);
-        } else {
-            if (documents.size() > 1) {
-                log.warning("Search for document by name and version produced two results");
-            }
-            for (Document document : documents) {
-                log.fine("found document: " + document);
-            }
-            return Optional.ofNullable(documents.get(0));
-        } 
+        return documents;
     }
 
     @Override

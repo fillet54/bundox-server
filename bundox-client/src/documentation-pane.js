@@ -5,7 +5,6 @@ export class DocumentationPane {
   static inject() { return [ObserverLocator, DocumentationNavModel]; }
   constructor(locator, documentationNavModel) {
      this.src = documentationNavModel.url;
-     
      this.locator = locator;
      this.documentationNavModel = documentationNavModel;
   }

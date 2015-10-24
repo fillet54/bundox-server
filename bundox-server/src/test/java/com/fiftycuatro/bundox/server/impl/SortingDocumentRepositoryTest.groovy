@@ -65,15 +65,15 @@ public class SortingDocumentRepositoryTest extends Specification {
         documents == someDocuments
     }
 
-    def "delegates to backing document repository for findDocumentByNameAndVersion"() { setup:
+    def "delegates to backing document repository for findDocumentsByNameAndVersion"() { setup:
         def someDocument = docWithNameAndVersion("Doc1", "1.1")
 
         when:
-        def document = sortingRepo.findDocumentByNameAndVersion("Doc1", "1.1");
+        def document = sortingRepo.findDocumentsByNameAndVersion("Doc1", "1.1");
 
         then:
-        1 * backingRepo.findDocumentByNameAndVersion("Doc1", "1.1") >> Optional.ofNullable(someDocument)
-        document.get() == someDocument
+        1 * backingRepo.findDocumentsByNameAndVersion("Doc1", "1.1") >> Arrays.asList(someDocument)
+        document.get(0) == someDocument
     }
 
     def "delegates to backing document repository for storeDocuments"() {

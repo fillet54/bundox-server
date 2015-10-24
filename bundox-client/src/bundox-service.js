@@ -22,7 +22,7 @@ export class BundoxService {
 
    retrieveAllDocuments() {
      return this.http.get(bundoxApiBase + documentEndPoint).then(response => {
-        return response.content.map(d => new Document(d.id, d.name, d.version, d.family));
+        return response.content.map(d => new Document(d.id, d.name, d.version, d.family, d.indexPath));
      });
    }
 
