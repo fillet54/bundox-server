@@ -88,3 +88,8 @@ sudo dpkg -i elasticsearch-1.7.2.deb
 rm elasticsearch-1.7.2.deb
 sudo update-rc.d elasticsearch defaults 95 10
 sudo service elasticsearch start
+
+# Create Bundox data folders
+sudo mkdir -p /opt/bundox/uploads
+
+
