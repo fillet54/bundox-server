@@ -91,7 +91,9 @@ public class DocumentationServiceImpl implements DocumentationService {
         String version = original.getDocument().getVersion();
         String rewritePath = String.format("/%s/%s/%s/%s/%s", 
                 rootPath, staticPath, name, version, original.getPath());
-        return new DocumentationItem(original.getSubject(), original.getDocument(), rewritePath, original.getType());
+        return new DocumentationItem(original.getSubject(),
+                original.getDocument(), rewritePath, original.getType(),
+                original.getNamespace());
     }
 
     @Override

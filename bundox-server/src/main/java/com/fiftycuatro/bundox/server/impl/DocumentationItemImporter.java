@@ -18,10 +18,18 @@ public class DocumentationItemImporter {
     }
 
     public DocumentationItem importItem(String docSetDir, Document document, String name, String path, String type) {
-        return new DocumentationItem(name, document, path, type);
+        DocumentationItemImporterHelper helper = getImporterForType(type);
+        String namespace = helper.resolveNamespace(docSetDir, path);
+        return new DocumentationItem(name, document, path, type, namespace);
     }
 
 
-    private void getImporterForType() {
+    private DocumentationItemImporterHelper getImporterForType(String type) {
+        for (DocumentationItemImporterHelper helper : helpers) {
+            if (helper.getSupportedTypes().contains(type)) {
+                return helper;
+            }
+        }
+        return defaultHelper;
     }
 }

@@ -60,9 +60,10 @@ public class DocumentInstallerImpl implements DocumentInstaller {
         String indexPath = getIndexPath(docSetDir);
         Document document = new Document(docName, docVersion, docFamily, indexPath);
         documentRepository.storeDocuments(Arrays.asList(document));
+        String docSetDocumentsDir = docSetDir + "/Contents/Resources/Documents";
         List<DocumentationItem> documentationItems = (new SQLiteDocSetImporter(docSetDir)).importDocSet().stream()
             .map(d -> {
-                return documentationItemImporter.importItem(docSetDir, document, d.get("name"), d.get("path"), d.get("type"));
+                return documentationItemImporter.importItem(docSetDocumentsDir, document, d.get("name"), d.get("path"), d.get("type"));
             })
             .collect(Collectors.toList());
         documentRepository.storeDocumentationItems(documentationItems);

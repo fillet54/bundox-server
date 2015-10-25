@@ -5,5 +5,5 @@ import java.util.List;
 public interface DocumentationItemImporterHelper {
    
     List<String> getSupportedTypes();
-    String resolveNamespace(String documentationPagePath);
+    String resolveNamespace(String docSetDir, String documentationPath);
 }

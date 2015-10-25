@@ -1,6 +1,8 @@
 package com.fiftycuatro.bundox.server.impl;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -21,24 +23,21 @@ public class GenericDocumentationItemImporterHelper implements DocumentationItem
         return new ArrayList<String>();
     }
 
-    public String resolveNamespace(String path) {
+    public String resolveNamespace(String docSetDir, String path) {
         try {
-            log.info(path);
-            String content = new String(Files.readAllBytes(Paths.get(path)));
+            URI uri = new URI(docSetDir + "/" + path);
+            String content = new String(Files.readAllBytes(Paths.get(uri.getPath())));
             Matcher matcher = TITLE_TAG.matcher(content);
 
             if(matcher.find()) {
                 return matcher.group(1).replaceAll("[\\s\\<>]+", " ").trim();
             }
         }
-        catch (IOException e) {
+        catch (IOException | URISyntaxException e) {
             log.warning("Error while finding namespace");
             log.warning(e.getMessage());
-        }
+        } 
         return "";
     }
 }
-
-
-
 

@@ -19,6 +19,7 @@ public class SortingDocumentRepositoryTest extends Specification {
     Document defaultDocument = new Document("Doc1", "1.1", "somelanguage", "index.html");
     String defaultPath = "some/path/string";
     String defaultType = "Method";
+    String defaultNamespace = "Namespace";
 
     def "delegates to backing document repository for getAllDocuments"() {
         setup:
@@ -199,10 +200,10 @@ public class SortingDocumentRepositoryTest extends Specification {
     }
 
     def docItemWithSubject(subject) {
-        new DocumentationItem(subject, defaultDocument, defaultPath, defaultType);
+        new DocumentationItem(subject, defaultDocument, defaultPath, defaultType, defaultNamespace);
     }
 
     def docItemWithSubjectAndType(subject, type) {
-        new DocumentationItem(subject, defaultDocument, defaultPath, type);
+        new DocumentationItem(subject, defaultDocument, defaultPath, type, defaultNamespace);
     }
 }

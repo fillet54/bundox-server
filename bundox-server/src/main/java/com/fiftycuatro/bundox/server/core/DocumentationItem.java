@@ -8,12 +8,14 @@ public class DocumentationItem {
     private final Document document;
     private final String path;
     private final String type;
+    private final String namespace;
     
-    public DocumentationItem(String subject, Document document, String path, String type) {
+    public DocumentationItem(String subject, Document document, String path, String type, String namespace) {
         this.subject = subject;
         this.document = document;
         this.path = path;
         this.type = type;
+        this.namespace = namespace;
     }
 
     public String getSubject() {
@@ -32,6 +34,10 @@ public class DocumentationItem {
         return type;
     }
 
+    public String getNamespace() {
+        return namespace;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -39,6 +45,7 @@ public class DocumentationItem {
         hash = 41 * hash + Objects.hashCode(this.document);
         hash = 41 * hash + Objects.hashCode(this.path);
         hash = 41 * hash + Objects.hashCode(this.type);
+        hash = 41 * hash + Objects.hashCode(this.namespace);
         return hash;
     }
 
@@ -61,6 +68,9 @@ public class DocumentationItem {
             return false;
         }
         if (!Objects.equals(this.type, other.type)) {
+            return false;
+        }
+        if (!Objects.equals(this.namespace, other.namespace)) {
             return false;
         }
         return true;

@@ -178,6 +178,11 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     xb.field("include_in_all", false);
                     xb.field("index", "not_analyzed");
                 xb.endObject();
+                xb.startObject("namespace");
+                    xb.field("type", "string");
+                    xb.field("include_in_all", false);
+                    xb.field("index", "not_analyzed");
+                xb.endObject();
             xb.endObject();
         xb.endObject();
     }
@@ -266,7 +271,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     result.get("subject").toString(),
                     localDocumentIndex.get(result.get("document_id")),
                     result.get("path").toString(),
-                    result.get("type").toString()
+                    result.get("type").toString(),
+                    result.get("namespace").toString()
             ));
         }
         return documentation;
@@ -321,6 +327,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                                 .field("document_id", documentation.getDocument().getId())
                                 .field("path", documentation.getPath())
                                 .field("type", documentation.getType())
+                                .field("namespace", documentation.getNamespace())
                                 .endObject()
                         )
                         .execute()

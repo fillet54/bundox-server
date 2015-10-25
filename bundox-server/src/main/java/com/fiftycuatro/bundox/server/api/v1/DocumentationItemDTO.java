@@ -7,14 +7,16 @@ public class DocumentationItemDTO {
     private String documentId;
     private String path;
     private String type;
+    private String namespace;
     
     public DocumentationItemDTO() { }
     
-    public DocumentationItemDTO(String subject, String documentId, String path, String type) {
+    public DocumentationItemDTO(String subject, String documentId, String path, String type, String namespace) {
         this.subject = subject;
         this.documentId = documentId;
         this.path = path;
         this.type = type;
+        this.namespace = namespace;
     }
 
     public String getSubject() {
@@ -48,6 +50,14 @@ public class DocumentationItemDTO {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
     
     @Override
     public int hashCode() {
@@ -56,6 +66,7 @@ public class DocumentationItemDTO {
         hash = 19 * hash + Objects.hashCode(this.documentId);
         hash = 19 * hash + Objects.hashCode(this.path);
         hash = 19 * hash + Objects.hashCode(this.type);
+        hash = 19 * hash + Objects.hashCode(this.namespace);
         return hash;
     }
 
@@ -78,6 +89,9 @@ public class DocumentationItemDTO {
             return false;
         }
         if (!Objects.equals(this.type, other.type)) {
+            return false;
+        }
+        if (!Objects.equals(this.namespace, other.namespace)) {
             return false;
         }
         return true;
