@@ -33,8 +33,8 @@ public class DocumentInstallerImpl implements DocumentInstaller {
     private DocumentRepository documentRepository;
 
     @Inject
-    @InjectedConfiguration(key="data_directory",
-                           defaultValue="/home/vagrant/docsets")
+    @InjectedConfiguration(key="bundox.data.docsets",
+                           defaultValue="/opt/bundox/docsets")
     private String dataDirectory;
 
     public DocumentInstallerImpl() {

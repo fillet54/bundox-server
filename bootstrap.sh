@@ -91,5 +91,6 @@ sudo service elasticsearch start
 
 # Create Bundox data folders
 sudo mkdir -p /opt/bundox/uploads
+sudo mkdir -p /opt/bundox/docsets
 
 
