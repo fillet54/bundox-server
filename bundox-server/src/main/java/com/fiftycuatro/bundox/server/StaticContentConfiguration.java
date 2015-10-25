@@ -16,7 +16,10 @@
 package com.fiftycuatro.bundox.server;
 
 import java.io.File;
+
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
+
 import org.ocpsoft.logging.Logger.Level;
 import org.ocpsoft.rewrite.annotation.RewriteConfiguration;
 import org.ocpsoft.rewrite.config.Configuration;
@@ -32,13 +35,18 @@ import org.ocpsoft.rewrite.servlet.config.Stream;
 @RewriteConfiguration
 public class StaticContentConfiguration extends HttpConfigurationProvider {
 
+    @Inject
+    @InjectedConfiguration(key="bundox.data.docsets",
+                           defaultValue="/opt/bundox/docsets")
+    private String docSetDataDirectory;
+
     @Override
     public Configuration getConfiguration(ServletContext context) {
         /*
          * You should select a path that exposes only the directory(s) from which content should be served, otherwise the
          * entire hard drive could be accessible.
          */
-        String resourceStr = "/home/vagrant/docsets/{name}/{version}/{name}.docset/Contents/Resources/Documents/{file}";
+        String resourceStr = docSetDataDirectory + "/{name}/{version}/{name}.docset/Contents/Resources/Documents/{file}";
 
         return ConfigurationBuilder.begin()
                 .addRule()
