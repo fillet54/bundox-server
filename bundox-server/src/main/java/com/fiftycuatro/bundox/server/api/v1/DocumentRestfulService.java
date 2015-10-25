@@ -15,10 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,8 +48,8 @@ public class DocumentRestfulService {
     DocumentationService documentationService;
 
     @Inject
-    @InjectedConfiguration(key="upload_file_path",
-                           defaultValue="/vagrant/uploads")
+    @InjectedConfiguration(key="bundox.data.uploads",
+                           defaultValue="/opt/bundox/uploads")
     String uploadDirectory;
     
     @GET
