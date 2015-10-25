@@ -5,14 +5,17 @@ import com.fiftycuatro.bundox.server.cdi.BackingStore;
 import com.fiftycuatro.bundox.server.core.Document;
 import com.fiftycuatro.bundox.server.core.DocumentInstaller;
 import com.fiftycuatro.bundox.server.core.DocumentRepository;
+import com.fiftycuatro.bundox.server.core.DocumentationItem;
 import com.fiftycuatro.util.plist.PListConfiguration;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -37,13 +40,17 @@ public class DocumentInstallerImpl implements DocumentInstaller {
                            defaultValue="/opt/bundox/docsets")
     private String dataDirectory;
 
+    @Inject
+    private DocumentationItemImporter documentationItemImporter;
+
     public DocumentInstallerImpl() {
     }
 
     public DocumentInstallerImpl(DocumentRepository documentRepository,
-            String dataDirectory) {
+            String dataDirectory, DocumentationItemImporter documentationItemImporter) {
         this.documentRepository = documentRepository;
         this.dataDirectory = dataDirectory;
+        this.documentationItemImporter = documentationItemImporter;
     }
 
     @Override
@@ -53,19 +60,15 @@ public class DocumentInstallerImpl implements DocumentInstaller {
         String indexPath = getIndexPath(docSetDir);
         Document document = new Document(docName, docVersion, docFamily, indexPath);
         documentRepository.storeDocuments(Arrays.asList(document));
-        (new SQLiteDocSetImporter(document, documentRepository, docSetDir))
-                .importDocSet();
+        List<DocumentationItem> documentationItems = (new SQLiteDocSetImporter(docSetDir)).importDocSet().stream()
+            .map(d -> {
+                return documentationItemImporter.importItem(docSetDir, document, d.get("name"), d.get("path"), d.get("type"));
+            })
+            .collect(Collectors.toList());
+        documentRepository.storeDocumentationItems(documentationItems);
         return document;
     }
     
-    @Override
-    public void reindex(Document document) {
-        documentRepository.deleteDocumentation(document);
-        String docSetDir = getDocSetDirectory(document.getName(), document.getVersion());
-        (new SQLiteDocSetImporter(document, documentRepository, docSetDir))
-                .importDocSet();
-    }
-
     private String extractDocSetArchive(String docName, String docVersion, String docSetArchivePath) {
         String destinationPath = getDestinationDirectory(docName, docVersion);
         String docSetDirPath = getDocSetDirectory(docName, docVersion);

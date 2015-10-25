@@ -61,7 +61,7 @@ public class DocumentInstallerImplTest {
     private void canImportFromDocSet(Document document, String archivePath) {
         DocumentRepository docRepo = Mockito.mock(DocumentRepository.class);
         String dataDirectory = TestUtilities.getTempDirWithDeleteOnExit();
-        DocumentInstallerImpl installer = new DocumentInstallerImpl(docRepo, dataDirectory);
+        DocumentInstallerImpl installer = new DocumentInstallerImpl(docRepo, dataDirectory, new DocumentationItemImporter());
 
         installer.installDocumentFromDocSetArchive(document.getName(), document.getVersion(), archivePath);
 

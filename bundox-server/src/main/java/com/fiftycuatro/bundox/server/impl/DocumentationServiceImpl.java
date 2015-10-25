@@ -103,9 +103,4 @@ public class DocumentationServiceImpl implements DocumentationService {
     public Document installDocumentFromDocSetArchive(String docName, String docVersion, String docSetArchivePath) {
         return documentInstaller.installDocumentFromDocSetArchive(docName, docVersion, docSetArchivePath);
     }
-
-    @Override
-    public void reindexDocument(Document document) {
-        documentInstaller.reindex(document);
-    }
 }

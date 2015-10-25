@@ -2,15 +2,25 @@ package com.fiftycuatro.bundox.server.impl;
 
 import spock.lang.Specification;
 
-public class GenericNamespaceResolverTest extends Specification {
+public class GenericDocumentationItemImporterHelperTest extends Specification {
 
+    def "support types is empty"() {
+        setup:
+        def importer = new GenericDocumentationItemImporterHelper();
+
+        when:
+        def supportedTypes = importer.getSupportedTypes();
+
+        then:
+        supportedTypes.size() == 0; 
+    }
     def "namespace is title of document page"() {
         setup:
         def path = "${TestUtilities.getExtractedDocSetPath("SomeLanguage")}/Contents/Resources/Documents/directory1/file1.html";
-        def importer = new GenericNamespaceResolver();
+        def importer = new GenericDocumentationItemImporterHelper();
 
         when:
-        def namespace = importer.getNamespaceFor(path);
+        def namespace = importer.resolveNamespace(path);
 
         then:
         namespace == "File1 Title";
@@ -19,10 +29,10 @@ public class GenericNamespaceResolverTest extends Specification {
     def "namespace is empty string when document has no title"() {
         setup:
         def path = "${TestUtilities.getExtractedDocSetPath("SomeLanguage")}/Contents/Resources/Documents/directory1/fileWithNoTitle.html";
-        def importer = new GenericNamespaceResolver();
+        def importer = new GenericDocumentationItemImporterHelper();
 
         when:
-        def namespace = importer.getNamespaceFor(path);
+        def namespace = importer.resolveNamespace(path);
 
         then:
         namespace == "";
@@ -31,10 +41,10 @@ public class GenericNamespaceResolverTest extends Specification {
     def "namespace is empty string when document does not exist"() {
         setup:
         def path = "${TestUtilities.getExtractedDocSetPath("SomeLanguage")}/Contents/Resources/Documents/directory1/fileThatDoesNotExist.html";
-        def importer = new GenericNamespaceResolver();
+        def importer = new GenericDocumentationItemImporterHelper();
 
         when:
-        def namespace = importer.getNamespaceFor(path);
+        def namespace = importer.resolveNamespace(path);
 
         then:
         namespace == "";
@@ -43,10 +53,10 @@ public class GenericNamespaceResolverTest extends Specification {
     def "namespace is trimmed"() {
         setup:
         def path = "${TestUtilities.getExtractedDocSetPath("SomeLanguage")}/Contents/Resources/Documents/directory1/fileThatNeedsTitleTrimmed.html";
-        def importer = new GenericNamespaceResolver();
+        def importer = new GenericDocumentationItemImporterHelper();
 
         when:
-        def namespace = importer.getNamespaceFor(path);
+        def namespace = importer.resolveNamespace(path);
 
         then:
         namespace == "Trimmed Title";
@@ -55,10 +65,10 @@ public class GenericNamespaceResolverTest extends Specification {
     def "namespace is cleaned up removing extra newlines"() {
         setup:
         def path = "${TestUtilities.getExtractedDocSetPath("SomeLanguage")}/Contents/Resources/Documents/directory1/fileThatNeedsTitleCleaned.html";
-        def importer = new GenericNamespaceResolver();
+        def importer = new GenericDocumentationItemImporterHelper();
 
         when:
-        def namespace = importer.getNamespaceFor(path);
+        def namespace = importer.resolveNamespace(path);
 
         then:
         namespace == "Cleaned Title";

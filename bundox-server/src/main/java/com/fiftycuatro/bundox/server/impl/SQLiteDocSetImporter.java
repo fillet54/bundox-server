@@ -15,16 +15,13 @@
  */
 package com.fiftycuatro.bundox.server.impl;
 
-import com.fiftycuatro.bundox.server.core.Document;
-import com.fiftycuatro.bundox.server.core.DocumentRepository;
-import com.fiftycuatro.bundox.server.core.DocumentationItem;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SQLiteDocSetImporter {
 
-    private final Document document;
-    private final DocumentRepository documentRepository;
     private final String extractedPath;
     private final SQLiteQueryExecutor queryExecutor;
 
@@ -35,10 +32,7 @@ public class SQLiteDocSetImporter {
             + "JOIN ZTOKENTYPE as n ON t.ZTOKENTYPE = n.Z_PK";
     private final String tableNameQueryFormat = "SELECT COUNT(*) FROM sqlite_master WHERE name='%s'";
 
-    public SQLiteDocSetImporter(Document document, DocumentRepository documentRepository,
-            String extractedPath) {
-        this.document = document;
-        this.documentRepository = documentRepository;
+    public SQLiteDocSetImporter(String extractedPath) {
         this.extractedPath = extractedPath;
         this.queryExecutor = new SQLiteQueryExecutor(getDocSetDatabasePath());
     }
@@ -47,11 +41,11 @@ public class SQLiteDocSetImporter {
         return String.format("%s/Contents/Resources/docSet.dsidx", extractedPath);
     }
 
-    public void importDocSet() {
+    public List<Map<String, String>> importDocSet() {
         if (docSetIsInDashFormat()) {
-            importDashFormatDocSet();
+            return importDashFormatDocSet();
         } else {
-            importZFormatDocSet();
+            return importZFormatDocSet();
         }
     }
 
@@ -59,31 +53,31 @@ public class SQLiteDocSetImporter {
         return docSetDatabaseHasTableNamed("searchIndex");
     }
 
-    private void importDashFormatDocSet() {
-        List<DocumentationItem> itemsToImport = new ArrayList<>();
+    private List<Map<String, String>> importDashFormatDocSet() {
+        List<Map<String, String>> items = new ArrayList<>();
         queryExecutor.executeQuery(dashFormatQuery, row -> {
-            itemsToImport.add(new DocumentationItem(
-                    row.getString("name"),
-                    document,
-                    row.getString("path"),
-                    row.getString("type")));
+            Map<String, String> item = new HashMap<>();
+            item.put("name", row.getString("name"));
+            item.put("path", row.getString("path"));
+            item.put("type", row.getString("type"));
+            items.add(item);
         });
-        documentRepository.storeDocumentationItems(itemsToImport);
+        return items;
     }
 
-    private void importZFormatDocSet() {
-        List<DocumentationItem> itemsToImport = new ArrayList<>();
+    private List<Map<String, String>> importZFormatDocSet() {
+        List<Map<String, String>> items = new ArrayList<>();
         queryExecutor.executeQuery(zFormatQuery, row -> {
             String path = String.format("%s#%s",
                     row.getString("ZPATH"),
                     row.getString("ZANCHOR"));
-            itemsToImport.add(new DocumentationItem(
-                    row.getString("ZTOKENNAME"),
-                    document,
-                    path,
-                    row.getString("ZTYPENAME")));
+            Map<String, String> item = new HashMap<>();
+            item.put("name", row.getString("ZTOKENNAME"));
+            item.put("path", path);
+            item.put("type", row.getString("ZTYPENAME"));
+            items.add(item);
         });
-        documentRepository.storeDocumentationItems(itemsToImport);
+        return items;
     }
 
     private boolean docSetDatabaseHasTableNamed(String tableName) {
