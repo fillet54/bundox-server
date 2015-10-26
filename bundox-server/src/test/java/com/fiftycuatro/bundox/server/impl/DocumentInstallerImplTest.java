@@ -42,19 +42,19 @@ public class DocumentInstallerImplTest {
 
     @Test
     public void canImportFromDashFormatDocSet() {
-        Document document = new Document("SomeLanguage", "1.1.1", "platform1", "index.html");
+        Document document = new Document("SomeLanguage", "1.1.1", "platform1", "index.html", "somelanguage");
         canImportFromDocSet(document, TestUtilities.getSomeLanguageDocSetArchivePath());
     }
 
     @Test
     public void canImportFromZFormatDocSet() {
-        Document document = new Document("SomeLanguageZ", "1.1.1", "platform1", "index.html");
+        Document document = new Document("SomeLanguageZ", "1.1.1", "platform1", "index.html", "somelanguagez");
         canImportFromDocSet(document, TestUtilities.getSomeLanguageZDocSetArchivePath());
     }
     
     @Test
     public void canImportFromDocSetWithNameNotMatchingArchiveDocsetName() {
-        Document document = new Document("SomeLanguage", "1.1.1", "platform1", "index.html");
+        Document document = new Document("SomeLanguage", "1.1.1", "platform1", "index.html", "somelanguage");
         canImportFromDocSet(document, TestUtilities.getSomeLanguageDocSetArchivePath());
     }
 

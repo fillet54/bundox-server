@@ -16,10 +16,11 @@ public class SortingDocumentRepositoryTest extends Specification {
     DocumentRepository backingRepo = Mock(DocumentRepository)
     DocumentRepository sortingRepo = new SortingDocumentRepository(backingRepo)
 
-    Document defaultDocument = new Document("Doc1", "1.1", "somelanguage", "index.html");
+    Document defaultDocument = new Document("Doc1", "1.1", "somelanguage", "index.html", "somelanguage");
     String defaultPath = "some/path/string";
     String defaultType = "Method";
     String defaultNamespace = "Namespace";
+    String defaultFormatFamily = "somelanguage";
 
     def "delegates to backing document repository for getAllDocuments"() {
         setup:
@@ -196,7 +197,7 @@ public class SortingDocumentRepositoryTest extends Specification {
     }
 
     def docWithNameAndVersion(name, version) {
-        new Document(name, version, "somelanguge", "index.html");
+        new Document(name, version, "somelanguge", "index.html", defaultFormatFamily);
     }
 
     def docItemWithSubject(subject) {

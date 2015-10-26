@@ -58,7 +58,8 @@ public class DocumentInstallerImpl implements DocumentInstaller {
         String docSetDir = extractDocSetArchive(docName, docVersion, docSetArchivePath);
         String docFamily = getFamilyFromDocSet(docSetDir); 
         String indexPath = getIndexPath(docSetDir);
-        Document document = new Document(docName, docVersion, docFamily, indexPath);
+        String formatFamily = getFormatFamilyFromDocSet(docSetDir);
+        Document document = new Document(docName, docVersion, docFamily, indexPath, formatFamily);
         documentRepository.storeDocuments(Arrays.asList(document));
         String docSetDocumentsDir = docSetDir + "/Contents/Resources/Documents";
         List<DocumentationItem> documentationItems = (new SQLiteDocSetImporter(docSetDir)).importDocSet().stream()
@@ -150,5 +151,18 @@ public class DocumentInstallerImpl implements DocumentInstaller {
             log.warning(e.getMessage());
         }
         return indexPath;
+    }
+
+    private String getFormatFamilyFromDocSet(String docSetDirectory) {
+        String family = "unknown";
+        String infoPlistPath = docSetDirectory + "/Contents/Info.plist";
+        try {
+            Configuration pList = PListConfiguration.fromPath(infoPlistPath);
+            family = Optional.ofNullable(pList.getString("DashDocSetFamily")).orElse(family);
+        } catch (ConfigurationException e) {
+            log.warning("Could not read Info.plist at " + infoPlistPath); 
+            log.warning(e.getMessage());
+        }
+        return family;
     }
 }

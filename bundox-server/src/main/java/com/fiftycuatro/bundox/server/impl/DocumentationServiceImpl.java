@@ -76,7 +76,7 @@ public class DocumentationServiceImpl implements DocumentationService {
     private Document rewriteDocumentIndexPath(Document original) {
         String rewritePath = String.format("/%s/%s/%s/%s/%s", 
                 rootPath, staticPath, original.getName(), original.getVersion(), original.getIndexPath());
-        return new Document(original.getName(), original.getVersion(), original.getFamily(), rewritePath);
+        return new Document(original.getName(), original.getVersion(), original.getFamily(), rewritePath, original.getFormatFamily());
     }
 
     @Override

@@ -200,7 +200,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     result.get("name").toString(),
                     result.get("version").toString(),
                     result.get("family").toString(),
-                    result.get("index_path").toString()
+                    result.get("index_path").toString(),
+                    result.get("format_family").toString()
             ));
         }
         return documents;
@@ -221,7 +222,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     result.get("name").toString(),
                     result.get("version").toString(),
                     result.get("family").toString(),
-                    result.get("index_path").toString()
+                    result.get("index_path").toString(),
+                    result.get("format_family").toString()
             ));
         }
         return documents;
@@ -236,7 +238,6 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 .execute()
                 .actionGet();
         List<Document> documents = new ArrayList<>();
-        long count = response.getHits().getTotalHits();
         for (SearchHit hit : response.getHits().getHits()) {
 
             Map<String, Object> result = hit.getSource();
@@ -244,7 +245,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     result.get("name").toString(),
                     result.get("version").toString(),
                     result.get("family").toString(),
-                    result.get("index_path").toString()
+                    result.get("index_path").toString(),
+                    result.get("format_family").toString()
             ));
         }
         return documents;
@@ -296,13 +298,14 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 .forEach(document -> {
                     try {
 
-                        IndexResponse response = client.prepareIndex(BUNDOX_INDEX, "document", document.getId())
+                        client.prepareIndex(BUNDOX_INDEX, "document", document.getId())
                         .setSource(jsonBuilder()
                                 .startObject()
                                 .field("name", document.getName())
                                 .field("version", document.getVersion())
                                 .field("family", document.getFamily())
                                 .field("index_path", document.getIndexPath())
+                                .field("format_family", document.getFormatFamily())
                                 .endObject()
                         )
                         .execute()

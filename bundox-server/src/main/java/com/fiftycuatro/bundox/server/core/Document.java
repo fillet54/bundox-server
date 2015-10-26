@@ -7,12 +7,14 @@ public class Document {
     private String version;
     private String family;
     private String indexPath;
+    private String formatFamily;
     
-    public Document(String name, String version, String family, String indexPath) {
+    public Document(String name, String version, String family, String indexPath, String formatFamily) {
         this.name = name;
         this.version = version;
         this.family = family;
         this.indexPath = indexPath;
+        this.formatFamily = formatFamily;
     }
     
     public String getId() {
@@ -35,6 +37,10 @@ public class Document {
         return indexPath;
     }
 
+    public String getFormatFamily() {
+        return formatFamily;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -42,6 +48,7 @@ public class Document {
         hash = 53 * hash + Objects.hashCode(this.version);
         hash = 53 * hash + Objects.hashCode(this.family);
         hash = 53 * hash + Objects.hashCode(this.indexPath);
+        hash = 53 * hash + Objects.hashCode(this.formatFamily);
         return hash;
     }
 
@@ -64,6 +71,9 @@ public class Document {
             return false;
         }
         if (!Objects.equals(this.indexPath, other.indexPath)) {
+            return false;
+        }
+        if (!Objects.equals(this.formatFamily, other.formatFamily)) {
             return false;
         }
         return true;

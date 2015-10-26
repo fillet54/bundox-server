@@ -14,19 +14,20 @@ public class DocumentationItemImporter {
 
     static {
         List<DocumentationItemImporterHelper> someHelpers = new ArrayList<>();
+        someHelpers.add(new JavaDocumentationItemImporterHelper());
         helpers = Collections.unmodifiableList(someHelpers);
     }
 
     public DocumentationItem importItem(String docSetDir, Document document, String name, String path, String type) {
-        DocumentationItemImporterHelper helper = getImporterForType(type);
+        DocumentationItemImporterHelper helper = getImporterForFormatFamily(document.getFormatFamily());
         String namespace = helper.resolveNamespace(docSetDir, path);
         return new DocumentationItem(name, document, path, type, namespace);
     }
 
 
-    private DocumentationItemImporterHelper getImporterForType(String type) {
+    private DocumentationItemImporterHelper getImporterForFormatFamily(String family) {
         for (DocumentationItemImporterHelper helper : helpers) {
-            if (helper.getSupportedTypes().contains(type)) {
+            if (helper.getSupportedTypes().contains(family)) {
                 return helper;
             }
         }
