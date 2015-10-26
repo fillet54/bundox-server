@@ -1,18 +1,13 @@
 import {SelectionModel} from './selection-model';
-import {DocumentationNavModel} from './documentation-nav-model';
 import {SearchPane} from './search-pane';
-import {ObserverLocator} from 'aurelia-framework';
 
 export class DocumentationResultListItem {
-   static inject() { return [SelectionModel, DocumentationNavModel, ObserverLocator, SearchPane]; }
-   constructor(selectionModel, documentationNavModel, observerLocator, searchPane) {
+   static inject() { return [SelectionModel, SearchPane]; }
+   constructor(selectionModel, searchPane) {
       this.displayText = "";
       this.path = "#";
       this.entryType = "";
-    //  this.isSelected = false;
       this.selectionModel = selectionModel;
-      this.documentationNavModel = documentationNavModel;
-      this.observerLocator = observerLocator;
       this.searchPane = searchPane;
    }
 
@@ -20,7 +15,6 @@ export class DocumentationResultListItem {
       this.displayText = model.subject;
       this.path = model.path;
       this.entryType = model.entryType ? model.entryType : "unknown";
-   //   this.observeSelected();
       this.searchTerm = this.searchPane.searchTerm;
       this.family = model.document ? model.document.family : null;
       this.items = model.items;
@@ -35,13 +29,6 @@ export class DocumentationResultListItem {
    }
 
    get isSelected() {
-      return this.items.includes(this.selectionModel.selectedItem);
-   }
-   observeSelected() {
-      this.observerLocator
-         .getObserver(this.selectionModel, 'selectedItem')
-         .subscribe(item => {
-            this.isSelected = this.items.includes(item);
-         });
+      return this.items.indexOf(this.selectionModel.selectedItem) > -1;
    }
 }
