@@ -189,6 +189,11 @@ div.au-stagger {
   cursor: pointer;
 }
 
+.documentation-result:hover {
+  background: #7698D6;
+  cursor: pointer;
+}
+
 img.family {
   width: 20px;
   height: 20px;
@@ -306,6 +311,9 @@ img.family {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: inline;
+  margin-bottom: 5px;
+  width: 100%;
 }
 
 /* Split-Pane Styles */
@@ -397,4 +405,28 @@ img.family {
 mark {
   background-color: #F4D35E;
   text-decoration: underline;
+}
+
+div.namespace-dropdown {
+  display: inline-block;
+}
+
+.namespace-dropdown ul {
+  margin-top: -35px;
+  width: 500px;
+}
+
+.namespace-dropdown li:hover {
+  background: #7698D6;
+}
+
+.result-group-count {
+  border-radius: 10px;
+  border-style: solid;
+  border-color: #aaa;
+  border-width: 1px;
+  background: grey;
+  width: 25px;
+  float:right;
+  text-align: center;
 }

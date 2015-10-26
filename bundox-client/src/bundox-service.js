@@ -1,6 +1,6 @@
 import {HttpClient} from 'aurelia-http-client';
 import {Document} from './document';
-import {DocumentationResult} from './documentation-result';
+import {DocumentationItem} from './documentation-item';
 import {LogManager} from 'aurelia-framework';
 import {mimeTypes} from 'aurelia-http-client';
 
@@ -31,7 +31,7 @@ export class BundoxService {
         var docIndexById = this.indexBy(documents, "id");
         log.info(docIndexById);
         return this.http.get(bundoxApiBase + allDocumentationSearchEndPoint + searchTerm).then(response => {
-           return response.content.map(r => new DocumentationResult(r.subject, r.path, r.type, docIndexById[r.documentId]));
+           return response.content.map(r => new DocumentationItem(r.subject, r.path, r.type, r.namespace, docIndexById[r.documentId]));
         });
      });
    }
@@ -41,7 +41,7 @@ export class BundoxService {
         var endpoint = `${bundoxApiBase}documents/${document.name}/${document.version}/documentation?maxResults=100&searchTerm=${searchTerm}`;
         var docIndexById = this.indexBy(documents, "id");
         return this.http.get(endpoint).then(response => {
-           return response.content.map(r => new DocumentationResult(r.subject, r.path, r.type, docIndexById[r.documentId]));
+           return response.content.map(r => new DocumentationItem(r.subject, r.path, r.type, r.namespace, docIndexById[r.documentId]));
         });
      });
    }

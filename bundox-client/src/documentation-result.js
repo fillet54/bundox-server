@@ -1,9 +1,10 @@
 export class DocumentationResult {
-   constructor(subject, path, entryType, document) {
-     this.subject = subject;
-     this.path = path;
+   constructor(items) {
+     this.subject = items[0].subject;
+     this.path = items[0].path;
      this.type = "documentation-result";
-     this.entryType = entryType;
-     this.document = document;
+     this.entryType = items[0].entryType;
+     this.document = items[0].document;
+     this.items = items;
    }
 }
