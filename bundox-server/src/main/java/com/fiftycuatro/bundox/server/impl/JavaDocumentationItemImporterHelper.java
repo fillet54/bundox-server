@@ -1,15 +1,10 @@
 package com.fiftycuatro.bundox.server.impl;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class JavaDocumentationItemImporterHelper implements DocumentationItemImporterHelper {
     
@@ -22,11 +17,11 @@ public class JavaDocumentationItemImporterHelper implements DocumentationItemImp
 
     public String resolveNamespace(String docSetDir, String path) {
         try {
-            URI uri = new URI(path);
-            String parent = Paths.get(uri.getPath()).getParent().toString();
+            URL url = new URL("file:///" + path);
+            String parent = url.getPath().toString().replaceAll(".html", "").substring(1);
             return parent.replaceAll("[\\/]", "."); 
         }
-        catch (URISyntaxException e) {
+        catch (MalformedURLException e) {
             log.warning("Error while finding namespace");
             log.warning(e.getMessage());
         } 

@@ -27,6 +27,6 @@ public class JavaDocumentationItemImporterHelperTest extends Specification {
         def namespace = importer.resolveNamespace(docSetPath, path);
 
         then:
-        namespace == "com.fiftycuatro.test";
+        namespace == "com.fiftycuatro.test.file1";
     }
 }
