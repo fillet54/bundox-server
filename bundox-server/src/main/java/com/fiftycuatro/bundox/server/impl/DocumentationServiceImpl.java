@@ -76,7 +76,7 @@ public class DocumentationServiceImpl implements DocumentationService {
     private Document rewriteDocumentIndexPath(Document original) {
         String rewritePath = String.format("/%s/%s/%s/%s/%s", 
                 rootPath, staticPath, original.getName(), original.getVersion(), original.getIndexPath());
-        return new Document(original.getName(), original.getVersion(), original.getFamily(), rewritePath);
+        return new Document(original.getName(), original.getVersion(), original.getFamily(), rewritePath, original.getFormatFamily());
     }
 
     @Override
@@ -91,7 +91,9 @@ public class DocumentationServiceImpl implements DocumentationService {
         String version = original.getDocument().getVersion();
         String rewritePath = String.format("/%s/%s/%s/%s/%s", 
                 rootPath, staticPath, name, version, original.getPath());
-        return new DocumentationItem(original.getSubject(), original.getDocument(), rewritePath, original.getType());
+        return new DocumentationItem(original.getSubject(),
+                original.getDocument(), rewritePath, original.getType(),
+                original.getNamespace());
     }
 
     @Override
@@ -102,10 +104,5 @@ public class DocumentationServiceImpl implements DocumentationService {
     @Override
     public Document installDocumentFromDocSetArchive(String docName, String docVersion, String docSetArchivePath) {
         return documentInstaller.installDocumentFromDocSetArchive(docName, docVersion, docSetArchivePath);
-    }
-
-    @Override
-    public void reindexDocument(Document document) {
-        documentInstaller.reindex(document);
     }
 }

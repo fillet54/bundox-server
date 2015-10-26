@@ -178,6 +178,11 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     xb.field("include_in_all", false);
                     xb.field("index", "not_analyzed");
                 xb.endObject();
+                xb.startObject("namespace");
+                    xb.field("type", "string");
+                    xb.field("include_in_all", false);
+                    xb.field("index", "not_analyzed");
+                xb.endObject();
             xb.endObject();
         xb.endObject();
     }
@@ -195,7 +200,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     result.get("name").toString(),
                     result.get("version").toString(),
                     result.get("family").toString(),
-                    result.get("index_path").toString()
+                    result.get("index_path").toString(),
+                    result.get("format_family").toString()
             ));
         }
         return documents;
@@ -216,7 +222,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     result.get("name").toString(),
                     result.get("version").toString(),
                     result.get("family").toString(),
-                    result.get("index_path").toString()
+                    result.get("index_path").toString(),
+                    result.get("format_family").toString()
             ));
         }
         return documents;
@@ -231,7 +238,6 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 .execute()
                 .actionGet();
         List<Document> documents = new ArrayList<>();
-        long count = response.getHits().getTotalHits();
         for (SearchHit hit : response.getHits().getHits()) {
 
             Map<String, Object> result = hit.getSource();
@@ -239,7 +245,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     result.get("name").toString(),
                     result.get("version").toString(),
                     result.get("family").toString(),
-                    result.get("index_path").toString()
+                    result.get("index_path").toString(),
+                    result.get("format_family").toString()
             ));
         }
         return documents;
@@ -266,7 +273,8 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                     result.get("subject").toString(),
                     localDocumentIndex.get(result.get("document_id")),
                     result.get("path").toString(),
-                    result.get("type").toString()
+                    result.get("type").toString(),
+                    result.get("namespace").toString()
             ));
         }
         return documentation;
@@ -290,13 +298,14 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                 .forEach(document -> {
                     try {
 
-                        IndexResponse response = client.prepareIndex(BUNDOX_INDEX, "document", document.getId())
+                        client.prepareIndex(BUNDOX_INDEX, "document", document.getId())
                         .setSource(jsonBuilder()
                                 .startObject()
                                 .field("name", document.getName())
                                 .field("version", document.getVersion())
                                 .field("family", document.getFamily())
                                 .field("index_path", document.getIndexPath())
+                                .field("format_family", document.getFormatFamily())
                                 .endObject()
                         )
                         .execute()
@@ -321,6 +330,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
                                 .field("document_id", documentation.getDocument().getId())
                                 .field("path", documentation.getPath())
                                 .field("type", documentation.getType())
+                                .field("namespace", documentation.getNamespace())
                                 .endObject()
                         )
                         .execute()

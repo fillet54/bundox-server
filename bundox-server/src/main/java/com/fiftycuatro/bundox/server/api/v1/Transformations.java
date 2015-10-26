@@ -21,6 +21,7 @@ public class Transformations {
         dto.setDocumentId(docItem.getDocument().getId());
         dto.setPath(docItem.getPath());
         dto.setType(docItem.getType());
+        dto.setNamespace(docItem.getNamespace());
         return dto;
     }
 }

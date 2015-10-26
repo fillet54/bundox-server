@@ -42,26 +42,26 @@ public class DocumentInstallerImplTest {
 
     @Test
     public void canImportFromDashFormatDocSet() {
-        Document document = new Document("SomeLanguage", "1.1.1", "platform1", "index.html");
+        Document document = new Document("SomeLanguage", "1.1.1", "platform1", "index.html", "somelanguage");
         canImportFromDocSet(document, TestUtilities.getSomeLanguageDocSetArchivePath());
     }
 
     @Test
     public void canImportFromZFormatDocSet() {
-        Document document = new Document("SomeLanguageZ", "1.1.1", "platform1", "index.html");
+        Document document = new Document("SomeLanguageZ", "1.1.1", "platform1", "index.html", "somelanguagez");
         canImportFromDocSet(document, TestUtilities.getSomeLanguageZDocSetArchivePath());
     }
     
     @Test
     public void canImportFromDocSetWithNameNotMatchingArchiveDocsetName() {
-        Document document = new Document("SomeLanguage", "1.1.1", "platform1", "index.html");
+        Document document = new Document("SomeLanguage", "1.1.1", "platform1", "index.html", "somelanguage");
         canImportFromDocSet(document, TestUtilities.getSomeLanguageDocSetArchivePath());
     }
 
     private void canImportFromDocSet(Document document, String archivePath) {
         DocumentRepository docRepo = Mockito.mock(DocumentRepository.class);
         String dataDirectory = TestUtilities.getTempDirWithDeleteOnExit();
-        DocumentInstallerImpl installer = new DocumentInstallerImpl(docRepo, dataDirectory);
+        DocumentInstallerImpl installer = new DocumentInstallerImpl(docRepo, dataDirectory, new DocumentationItemImporter());
 
         installer.installDocumentFromDocSetArchive(document.getName(), document.getVersion(), archivePath);
 
@@ -100,9 +100,9 @@ public class DocumentInstallerImplTest {
 
         private Set allDocumentationItemSet() {
             Set all = new HashSet();
-            all.add(new DocumentationItem("someFunction(int x)", document, "index.html#someFunctionAnchor", "Method"));
-            all.add(new DocumentationItem("someOtherFunction()", document, "index.html#someOtherFunctionAnchor", "Method"));
-            all.add(new DocumentationItem("oneMoreFunction()", document, "directory1/file1.html#anotherAnchor", "Method"));
+            all.add(new DocumentationItem("someFunction(int x)", document, "index.html#someFunctionAnchor", "Method", "Index" ));
+            all.add(new DocumentationItem("someOtherFunction()", document, "index.html#someOtherFunctionAnchor", "Method", "Index"));
+            all.add(new DocumentationItem("oneMoreFunction()", document, "directory1/file1.html#anotherAnchor", "Method", "File1"));
             return all;
         }
     }

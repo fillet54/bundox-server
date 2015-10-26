@@ -1,18 +1,13 @@
 import {SelectionModel} from './selection-model';
-import {DocumentationNavModel} from './documentation-nav-model';
 import {SearchPane} from './search-pane';
-import {ObserverLocator} from 'aurelia-framework';
 
 export class DocumentationResultListItem {
-   static inject() { return [SelectionModel, DocumentationNavModel, ObserverLocator, SearchPane]; }
-   constructor(selectionModel, documentationNavModel, observerLocator, searchPane) {
+   static inject() { return [SelectionModel, SearchPane]; }
+   constructor(selectionModel, searchPane) {
       this.displayText = "";
       this.path = "#";
       this.entryType = "";
-      this.isSelected = false;
       this.selectionModel = selectionModel;
-      this.documentationNavModel = documentationNavModel;
-      this.observerLocator = observerLocator;
       this.searchPane = searchPane;
    }
 
@@ -20,22 +15,20 @@ export class DocumentationResultListItem {
       this.displayText = model.subject;
       this.path = model.path;
       this.entryType = model.entryType ? model.entryType : "unknown";
-      this.observeSelected();
       this.searchTerm = this.searchPane.searchTerm;
       this.family = model.document ? model.document.family : null;
+      this.items = model.items;
    }
 
    select() {
-      this.selectionModel.select(this);
+      this.selectionModel.select(this.items[0]);
    }
 
-   observeSelected() {
-      this.observerLocator
-         .getObserver(this.selectionModel, 'selectedItem')
-         .subscribe(item => {
-            this.isSelected = this == item;
-            if (this.isSelected)
-               this.documentationNavModel.navigateTo(this.path);
-         });
+   selectItem(item) {
+      this.selectionModel.select(item);
+   }
+
+   get isSelected() {
+      return this.items.indexOf(this.selectionModel.selectedItem) > -1;
    }
 }
