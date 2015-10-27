@@ -191,6 +191,7 @@ public class DocumentRepositoryImpl implements DocumentRepository {
     public List<Document> getAllDocuments() {
         SearchResponse response = client.prepareSearch(BUNDOX_INDEX)
                 .setTypes("document")
+                .setFrom(0).setSize(10000) // 10000 seems like a reasonably high number of docs
                 .execute()
                 .actionGet();
         List<Document> documents = new ArrayList<>();
