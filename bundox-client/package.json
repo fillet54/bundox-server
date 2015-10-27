@@ -1,22 +1,21 @@
 {
-  "name": "aurelia-skeleton-navigation",
-  "version": "0.18.1",
-  "description": "A starter kit for building a standard navigation-style app with Aurelia.",
+  "name": "bundox-client",
+  "version": "1.0.0-beta1",
+  "description": "A Documentation Fuzzy Search Client",
   "keywords": [
-    "aurelia",
-    "navigation",
-    "skeleton"
+    "Dash",
+    "Docset"
   ],
-  "homepage": "http://aurelia.io",
+  "homepage": "",
   "bugs": {
-    "url": "https://github.com/aurelia/skeleton-navigation/issues"
+    "url": "https://github.com/fillet54/bundox-server/issues"
   },
   "license": "MIT",
-  "author": "Rob Eisenberg <rob@bluespire.com> (http://robeisenberg.com/)",
-  "main": "dist/main.js",
+  "author": "Phillip Gomez <fillet54@gmail.com> (http://philgomez.com/)",
+  "main": "dist/app-build.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/aurelia/skeleton-navigation"
+    "url": "http://github.com/fillet54/bundox-server"
   },
   "scripts": {
     "test": "gulp test",
@@ -51,7 +50,8 @@
     "require-dir": "^0.1.0",
     "run-sequence": "^1.0.2",
     "vinyl-paths": "^1.0.0",
-    "yargs": "^2.1.1"
+    "yargs": "^2.1.1",
+    "gulp-zip": "~3.0.2"
   },
   "jspm": {
     "dependencies": {
