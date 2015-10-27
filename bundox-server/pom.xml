@@ -6,7 +6,7 @@
     <groupId>com.fiftyquatro</groupId>
     <artifactId>bundox</artifactId>
     <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-beta1</version>
     <name>bundox-server</name>
 
     <build>
